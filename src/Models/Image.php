@@ -1,6 +1,6 @@
 <?php
 
-namespace Corcel\Acf\Models;
+namespace Tbruckmaier\Corcelacf\Models;
 
 use Corcel\Model\Attachment;
 

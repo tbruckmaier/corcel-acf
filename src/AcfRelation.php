@@ -1,6 +1,6 @@
 <?php
 
-namespace Corcel\Acf;
+namespace Tbruckmaier\Corcelacf;
 
 use Illuminate\Database\Eloquent\Relations\HasOne;
 

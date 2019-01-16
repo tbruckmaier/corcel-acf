@@ -1,9 +1,12 @@
 {
-  "name": "corcel/acf",
+  "name": "tbruckmaier/corcel-acf",
   "description": "Advanced Custom Field (ACF) plugin for Corcel",
-  "homepage": "http://github.com/corcel/acf",
+  "homepage": "http://github.com/tbruckmaier/corcel-acf",
   "license": "MIT",
   "authors": [
+    {
+      "name": "Thomas Bruckmaier"
+    },
     {
       "name": "Junior Grossi",
       "email": "juniorgro@gmail.com",
@@ -21,8 +24,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Corcel\\Acf\\": "src/",
-      "Corcel\\Acf\\Tests\\": "tests/"
+      "Tbruckmaier\\Corcelacf\\": "src/",
+      "Tbruckmaier\\Corcelacf\\Tests\\": "tests/"
     }
   }
 }

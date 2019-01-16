@@ -1,6 +1,6 @@
 <?php
 
-namespace Corcel\Acf\Support;
+namespace Tbruckmaier\Corcelacf\Support;
 
 use Illuminate\Support\Collection;
 

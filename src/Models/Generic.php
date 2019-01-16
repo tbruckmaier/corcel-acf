@@ -1,6 +1,6 @@
 <?php
 
-namespace Corcel\Acf\Models;
+namespace Tbruckmaier\Corcelacf\Models;
 
 /**
  * Fallback field for all unknown fields. Returns the plain value stored in the

@@ -1,8 +1,8 @@
 <?php
 
-namespace Corcel\Acf\Models;
+namespace Tbruckmaier\Corcelacf\Models;
 
-use Corcel\Acf\Support\RepeaterLayout;
+use Tbruckmaier\Corcelacf\Support\RepeaterLayout;
 
 class Repeater extends BaseField
 {

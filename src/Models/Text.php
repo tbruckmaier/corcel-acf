@@ -1,6 +1,6 @@
 <?php
 
-namespace Corcel\Acf\Models;
+namespace Tbruckmaier\Corcelacf\Models;
 
 class Text extends Generic
 {

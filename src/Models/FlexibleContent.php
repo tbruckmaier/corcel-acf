@@ -1,8 +1,8 @@
 <?php
 
-namespace Corcel\Acf\Models;
+namespace Tbruckmaier\Corcelacf\Models;
 
-use Corcel\Acf\Support\FlexibleContentLayout;
+use Tbruckmaier\Corcelacf\Support\FlexibleContentLayout;
 
 class FlexibleContent extends BaseField
 {
