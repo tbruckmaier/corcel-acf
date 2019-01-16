@@ -19,6 +19,9 @@ class AcfRelation extends HasOne
 
     protected function getCorrectAcfField($acfField)
     {
+        if (!$acfField) {
+            return null;
+        }
         $data = $this->parent->meta->pluck('meta_value', 'meta_key');
         return $acfField->setData($data)->setLocalKey(substr($this->localKey, 1));
     }
