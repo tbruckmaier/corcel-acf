@@ -20,7 +20,8 @@ class AcfField extends Post
 
     /**
      * When initializing new AcfFields, use the proper class for this type. The
-     * requested type can be found in post_content attribute
+     * requested type can be found in post_content attribute. If the type is not
+     * supported, a AcfFieldText instance is returned
      */
     protected function getPostInstance(array $attributes)
     {
@@ -28,11 +29,17 @@ class AcfField extends Post
 
         $type = data_get($config, 'type');
 
-        // FIXME default to text
+        $baseClassName = \Corcel\Acf\Models\AcfField::class;
 
-        $className = $className = \Corcel\Acf\Models\AcfField::class . ucfirst(camel_case($type));
+        $className = $baseClassName . ucfirst(camel_case($type));
 
-        return new $className();
+        if (class_exists($className)) {
+            return new $className();
+        }
+
+        $textClassName = $baseClassName . 'Text';
+
+        return new $textClassName;
     }
 
     public function setPostContent($post)
