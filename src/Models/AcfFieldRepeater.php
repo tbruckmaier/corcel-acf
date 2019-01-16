@@ -15,7 +15,7 @@ class AcfFieldRepeater extends AcfField
 
     public function getItemsAttribute()
     {
-        $count = $this->post_content_value;
+        $count = $this->value;
         $layouts = $this->layouts->keyBy('type');
 
         $ret = collect();
@@ -29,7 +29,7 @@ class AcfFieldRepeater extends AcfField
                 $field = $layout->replicate();
                 $internalName = sprintf('%s_%d_%s', $this->localKey, $i, $layout->post_excerpt);
 
-                $field->setPostContent($this->postContent)->setLocalKey($internalName);
+                $field->setData($this->data)->setLocalKey($internalName);
 
                 $row->put($layout->post_excerpt, $field);
             }

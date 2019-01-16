@@ -3,6 +3,7 @@
 namespace Corcel\Acf\Models;
 
 use Corcel\Model\Post;
+use Illuminate\Support\Collection;
 
 class AcfField extends Post
 {
@@ -11,11 +12,23 @@ class AcfField extends Post
      */
     protected $postType = 'acf-field';
 
-    protected $postContent;
+    /**
+     * Holds the complete post's meta data
+     * 
+     * @var Collection
+     */
+    protected $data;
 
+    /**
+     * The key of this field, e.g. which field in $data this field refers to
+     *
+     * @var string
+     */
     protected $localKey;
 
-    // do not load meta fields for acf fields (it is empty anyway)
+    /**
+     * Disable meta relation autoload, as acf fields do not have meta data
+     */
     protected $with = [];
 
     /**
@@ -42,15 +55,20 @@ class AcfField extends Post
         return new $textClassName;
     }
 
-    public function setPostContent($post)
+    /**
+     * Set the post's meta data
+     */
+    public function setData(Collection $data)
     {
-        $this->postContent = $post;
+        $this->data = $data;
         return $this;
     }
 
     /**
-     * Get this fields acf config. It is stored serialized in the post_content
+     * Get this field's acf config. It is stored serialized in the post_content
      * column
+     *
+     * @return array
      */
     public function getConfigAttribute()
     {
@@ -58,7 +76,9 @@ class AcfField extends Post
     }
 
     /**
-     * Get this fields type
+     * Get this field's type from the config
+     *
+     * @return string
      */
     public function getTypeAttribute()
     {
@@ -66,23 +86,23 @@ class AcfField extends Post
         return isset($fieldData['type']) ? $fieldData['type'] : 'text';
     }
 
-    public function getPostContentValueAttribute()
+    /**
+     * Get this field's actual value, e.g. the entry in $this->data matching
+     * $this->localKey
+     *
+     * @return string
+     */
+    public function getValueAttribute()
     {
-        return $this->postContent->getMeta($this->localKey);
+        return $this->data->get($this->localKey);
     }
 
+    /**
+     * Set the local key, e.g. which entry from $this->data this field refers to
+     */
     public function setLocalKey($value)
     {
         $this->localKey = $value;
         return $this;
-    }
-
-    /**
-     * Children of an acf field are acf fields themselves. Override parent
-     * method to get the correct class type
-     */
-    public function children()
-    {
-        return $this->hasMany(AcfField::class, 'post_parent');
     }
 }

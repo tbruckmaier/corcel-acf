@@ -36,14 +36,14 @@ class AcfFieldFlexibleContent extends AcfField
     {
         $ret = collect();
 
-        $contentBlocks = unserialize($this->post_content_value);
+        $contentBlocks = unserialize($this->value);
 
         foreach ($contentBlocks as $i => $contentBlock) {
             $block = $this->layout_blocks->get($contentBlock);
 
             $block->each(function($field) use ($i){
                 $internalName = sprintf('%s_%d_%s', $this->localKey, $i, $field->post_excerpt);
-                $field->setPostContent($this->postContent)->setLocalKey($internalName);
+                $field->setData($this->data)->setLocalKey($internalName);
             });
 
             $ret->push($block);

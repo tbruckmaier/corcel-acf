@@ -22,6 +22,6 @@ class HasOneAcf extends HasOne
     protected function getCorrectAcfField($acfField)
     {
         $data = $this->parent->meta->pluck('meta_value', 'meta_key');
-        return $acfField->setData($this->parent)->setLocalKey(substr($this->localKey, 1));
+        return $acfField->setData($data)->setLocalKey(substr($this->localKey, 1));
     }
 }
