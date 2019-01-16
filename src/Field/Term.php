@@ -3,7 +3,7 @@
 namespace Corcel\Acf\Field;
 
 use Corcel\Acf\FieldInterface;
-use Corcel\Post;
+use Corcel\Model\Post;
 use Illuminate\Support\Collection;
 
 /**
@@ -19,26 +19,32 @@ class Term extends BasicField implements FieldInterface
     protected $items;
 
     /**
-     * @var \Corcel\Term
+     * @var \Corcel\Model\Term
      */
     protected $term;
 
     /**
      * @param Post $post
      */
-    public function __construct(Post $post)
+    public function __construct($repository)
     {
-        parent::__construct($post);
-        $this->term = new \Corcel\Term();
-        $this->term->setConnection($post->getConnectionName());
+        parent::__construct($repository);
+        $this->term = new \Corcel\Model\Term();
+        $this->term->setConnection($repository->getConnectionName());
     }
 
     /**
      * @param string $fieldName
      */
-    public function process($fieldName)
+    public function process(string $fieldName)
     {
+        parent::process($fieldName);
         $value = $this->fetchValue($fieldName);
+
+        if ($unserialized = @unserialize($value)) {
+            $value = $unserialized;
+        }
+
         if (is_array($value)) {
             $this->items = $this->term->whereIn('term_id', $value)->get(); // ids
         } else {

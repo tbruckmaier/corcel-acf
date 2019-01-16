@@ -3,7 +3,7 @@
 namespace Corcel\Acf\Field;
 
 use Corcel\Acf\FieldInterface;
-use Corcel\Post;
+use Corcel\Model\Post;
 use Illuminate\Support\Collection;
 
 /**
@@ -26,19 +26,25 @@ class Gallery extends Image implements FieldInterface
     /**
      * @param $field
      */
-    public function process($field)
+    public function process(string $field)
     {
-        if ($ids = $this->fetchValue($field)) {
-            $connection = $this->post->getConnectionName();
+        parent::process($field);
+        $value = $this->fetchValue($field);
+        $ids = is_array($value) ? $value : @unserialize($value);
+
+        if ($ids) {
+            $connection = $this->repository->getConnectionName();
             $attachments = Post::on($connection)->whereIn('ID', $ids)->get();
 
             $metaDataValues = $this->fetchMultipleMetadataValues($attachments);
 
             foreach ($attachments as $attachment) {
-                $image = new Image($this->post);
-                $image->fillFields($attachment);
-                $image->fillMetadataFields($metaDataValues[$attachment->ID]);
-                $this->images[] = $image;
+                if (array_key_exists($attachment->ID, $metaDataValues)) {
+                    $image = new Image($this->repository);
+                    $image->fillFields($attachment);
+                    $image->fillMetadataFields($metaDataValues[$attachment->ID]);
+                    $this->images[] = $image;
+                }
             }
         }
     }
