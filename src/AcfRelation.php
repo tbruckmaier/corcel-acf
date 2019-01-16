@@ -1,12 +1,10 @@
 <?php
 
-namespace Corcel\Acf\Models;
+namespace Corcel\Acf;
 
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Corcel\Acf\Models\PostAcfField;
-use Corcel\Acf\Models\PostAcfFieldImage;
 
-class HasOneAcf extends HasOne
+class AcfRelation extends HasOne
 {
     public function getResults()
     {

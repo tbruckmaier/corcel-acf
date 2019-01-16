@@ -1,6 +1,6 @@
 <?php
 
-namespace Corcel\Acf\Models;
+namespace Corcel\Acf;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,7 +32,7 @@ trait AcfTrait
 
     public function hasOneAcf($localKey)
     {
-        $className = \Corcel\Acf\Models\AcfField::class;
+        $className = Models\BaseField::class;
 
         $instance = $this->newRelatedInstance($className);
 
@@ -45,6 +45,6 @@ trait AcfTrait
 
     protected function newHasOneAcf(Builder $query, Model $parent, $foreignKey, $localKey)
     {
-        return new HasOneAcf($query, $parent, $foreignKey, $localKey);
+        return new AcfRelation($query, $parent, $foreignKey, $localKey);
     }
 }

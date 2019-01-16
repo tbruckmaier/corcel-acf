@@ -2,15 +2,13 @@
 
 namespace Corcel\Acf\Models;
 
-use Corcel\Model\Post;
-
-class AcfFieldRepeater extends AcfField
+class Repeater extends BaseField
 {
     protected $with = ['layouts'];
 
     public function layouts()
     {
-        return $this->hasMany(AcfField::class, 'post_parent');
+        return $this->hasMany(BaseField::class, 'post_parent');
     }
 
     public function getItemsAttribute()

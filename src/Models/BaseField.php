@@ -5,7 +5,7 @@ namespace Corcel\Acf\Models;
 use Corcel\Model\Post;
 use Illuminate\Support\Collection;
 
-class AcfField extends Post
+class BaseField extends Post
 {
     /**
      * @var string
@@ -34,25 +34,20 @@ class AcfField extends Post
     /**
      * When initializing new AcfFields, use the proper class for this type. The
      * requested type can be found in post_content attribute. If the type is not
-     * supported, a AcfFieldText instance is returned
+     * supported, a BaseField instance is returned
      */
     protected function getPostInstance(array $attributes)
     {
         $config = unserialize(data_get($attributes, 'post_content'));
-
         $type = data_get($config, 'type');
 
-        $baseClassName = \Corcel\Acf\Models\AcfField::class;
-
-        $className = $baseClassName . ucfirst(camel_case($type));
+        $className = __NAMESPACE__ . '\\' . ucfirst(camel_case($type));
 
         if (class_exists($className)) {
             return new $className();
         }
 
-        $textClassName = $baseClassName . 'Text';
-
-        return new $textClassName;
+        return new self();
     }
 
     /**
