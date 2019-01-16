@@ -36,6 +36,71 @@ class BaseField extends Post
     protected $with = [];
 
     /**
+     * Which field type maps to which class?
+     *
+     * @param string $type Acf field type
+     *
+     * @return string|null class name
+     */
+    protected function mapTypeToClass(string $type)
+    {
+        // TODO make mapping configurable
+        switch ($type) {
+            case 'text':
+            case 'textarea':
+            case 'number':
+            case 'email':
+            case 'url':
+            case 'link':
+            case 'password':
+            case 'wysiwyg':
+            case 'editor':
+            case 'oembed':
+            case 'embed':
+            case 'color_picker':
+            case 'select':
+            case 'checkbox':
+            case 'radio':
+                return Text::class;
+                break;
+            case 'image':
+            case 'img':
+                return Image::class;
+                break;
+            case 'file':
+                return Generic::class; // TODO
+            case 'gallery':
+                return Generic::class; // TODO
+            case 'true_false':
+            case 'boolean':
+                return Generic::class; // TODO
+            case 'post_object':
+            case 'post':
+            case 'relationship':
+                return Generic::class; // TODO
+            case 'page_link':
+                return Generic::class; // TODO
+            case 'taxonomy':
+            case 'term':
+                return Generic::class; // TODO
+            case 'user':
+                return Generic::class; // TODO
+            case 'date_picker':
+            case 'date_time_picker':
+            case 'time_picker':
+                return Generic::class; // TODO
+            case 'repeater':
+                return Repeater::class;
+            case 'flexible_content':
+                return FlexibleContent::class;
+            case 'clone':
+                return Generic::class; // TODO
+        }
+
+        return null;
+    }
+
+    /**
      * When initializing new AcfFields, use the proper class for this type. The
      * requested type can be found in post_content attribute. If the type is not
      * supported, a BaseField instance is returned
@@ -45,7 +110,7 @@ class BaseField extends Post
         $config = unserialize(data_get($attributes, 'post_content'));
         $type = data_get($config, 'type');
 
-        $className = __NAMESPACE__ . '\\' . ucfirst(camel_case($type));
+        $className = $this->mapTypeToClass($type);
 
         if (class_exists($className)) {
             return new $className();
