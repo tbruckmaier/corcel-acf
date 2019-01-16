@@ -4,7 +4,7 @@ namespace Corcel\Acf\Field;
 
 use Carbon\Carbon;
 use Corcel\Acf\FieldInterface;
-use Corcel\Post;
+use Corcel\Model\Post;
 
 /**
  * Class DateTime.
@@ -21,8 +21,9 @@ class DateTime extends BasicField implements FieldInterface
     /**
      * @param string $fieldName
      */
-    public function process($fieldName)
+    public function process(string $fieldName)
     {
+        parent::process($fieldName);
         $dateString = $this->fetchValue($fieldName);
         $format = $this->getDateFormatFromString($dateString);
         $this->date = Carbon::createFromFormat($format, $dateString);

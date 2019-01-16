@@ -2,7 +2,8 @@
 
 namespace Corcel\Acf\Field;
 
-use Corcel\Post;
+use Corcel\Model\Post;
+use Corcel\Model\Meta\PostMeta;
 use Corcel\Acf\FieldInterface;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -56,17 +57,18 @@ class Image extends BasicField implements FieldInterface
     /**
      * @param string $field
      */
-    public function process($field)
+    public function process(string $field)
     {
+        parent::process($field);
         $attachmentId = $this->fetchValue($field);
-           
-        $connection = $this->post->getConnectionName();
-        
+
+        $connection = $this->repository->getConnectionName();
+
         if ($attachment = Post::on($connection)->find(intval($attachmentId))) {
             $this->fillFields($attachment);
 
             $imageData = $this->fetchMetadataValue($attachment);
-        
+
             $this->fillMetadataFields($imageData);
         }
     }
@@ -84,6 +86,8 @@ class Image extends BasicField implements FieldInterface
      */
     protected function fillFields(Post $attachment)
     {
+        $this->attachment = $attachment;
+
         $this->mime_type = $attachment->post_mime_type;
         $this->url = $attachment->guid;
         $this->description = $attachment->post_excerpt;
@@ -91,16 +95,17 @@ class Image extends BasicField implements FieldInterface
 
     /**
      * @param string $size
+     * @param bool $useOriginalFallback
      *
      * @return Image
      */
-    public function size($size)
+    public function size($size, $useOriginalFallback = false)
     {
         if (isset($this->sizes[$size])) {
             return $this->fillThumbnailFields($this->sizes[$size]);
         }
 
-        return $this->fillThumbnailFields($this->sizes['thumbnail']);
+        return $useOriginalFallback ? $this : $this->fillThumbnailFields($this->sizes['thumbnail']);
     }
 
     /**
@@ -110,11 +115,14 @@ class Image extends BasicField implements FieldInterface
      */
     protected function fillThumbnailFields(array $data)
     {
-        $size = new static($this->post);
+        $size = new Image($this->repository);
         $size->filename = $data['file'];
         $size->width = $data['width'];
         $size->height = $data['height'];
         $size->mime_type = $data['mime-type'];
+
+        $urlPath = dirname($this->url);
+        $size->url = sprintf('%s/%s', $urlPath, $size->filename);
 
         return $size;
     }
@@ -126,11 +134,7 @@ class Image extends BasicField implements FieldInterface
      */
     protected function fetchMetadataValue(Post $attachment)
     {
-        $meta = $this->postMeta->where('post_id', $attachment->ID)
-            ->where('meta_key', '_wp_attachment_metadata')
-            ->first();
-
-        return unserialize($meta->meta_value);
+        return unserialize($attachment->getMeta('_wp_attachment_metadata'));
     }
 
     /**
@@ -143,10 +147,10 @@ class Image extends BasicField implements FieldInterface
         $ids = $attachments->pluck('ID')->toArray();
         $metadataValues = [];
 
-        $metaRows = $this->postMeta->whereIn('post_id', $ids)
+        $metaRows = PostMeta::whereIn("post_id", $ids)
             ->where('meta_key', '_wp_attachment_metadata')
             ->get();
-
+            
         foreach ($metaRows as $meta) {
             $metadataValues[$meta->post_id] = unserialize($meta->meta_value);
         }

@@ -3,7 +3,7 @@
 namespace Corcel\Acf\Field;
 
 use Corcel\Acf\FieldInterface;
-use Corcel\Post;
+use Corcel\Model\Post;
 
 /**
  * Class User.
@@ -13,36 +13,37 @@ use Corcel\Post;
 class User extends BasicField implements FieldInterface
 {
     /**
-     * @var \Corcel\User
+     * @var \Corcel\Model\User
      */
     protected $user;
 
     /**
-     * @var \Corcel\User
+     * @var \Corcel\Model\User
      */
     protected $value;
 
     /**
      * @param Post $post
      */
-    public function __construct(Post $post)
+    public function __construct($post)
     {
         parent::__construct($post);
-        $this->user = new \Corcel\User();
-        $this->user->setConnection($post->getConnectionName());
+        $this->user = new \Corcel\Model\User();
+        $this->user->setConnection($this->repository->getConnectionName());
     }
 
     /**
      * @param string $fieldName
      */
-    public function process($fieldName)
+    public function process(string $fieldName)
     {
+        parent::process($fieldName);
         $userId = $this->fetchValue($fieldName);
         $this->value = $this->user->find($userId);
     }
 
     /**
-     * @return \Corcel\User
+     * @return \Corcel\Model\User
      */
     public function get()
     {

@@ -3,7 +3,7 @@
 namespace Corcel\Acf\Field;
 
 use Corcel\Acf\FieldInterface;
-use Corcel\Post;
+use Corcel\Model\Post;
 
 /**
  * Class File.
@@ -43,13 +43,23 @@ class File extends BasicField implements FieldInterface
     public $mime_type;
 
     /**
+     * @var Post
+     */
+    public $attachment;
+
+    /**
      * @param string $field
      */
-    public function process($field)
+    public function process(string $field)
     {
+        parent::process($field);
         $value = $this->fetchValue($field);
-        $file = $this->post->find($value);
-        $this->fillFields($file);
+
+        $connection = $this->repository->getConnectionName();
+
+        if ($file = Post::on($connection)->find(intval($value))) {
+            $this->fillFields($file);
+        }
     }
 
     /**
@@ -71,5 +81,6 @@ class File extends BasicField implements FieldInterface
         $this->description = $file->post_content;
         $this->caption = $file->post_excerpt;
         $this->filename = basename($this->url);
+        $this->attachment = $file;
     }
 }
