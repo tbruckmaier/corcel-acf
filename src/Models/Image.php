@@ -6,8 +6,8 @@ use Corcel\Model\Attachment;
 
 class Image extends BaseField
 {
-    public function attachment()
+    public function value()
     {
-        return $this->hasOne(Attachment::class, 'ID', 'value');
+        return $this->hasOne(Attachment::class, 'ID', 'internal_value');
     }
 }

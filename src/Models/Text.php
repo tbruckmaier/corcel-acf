@@ -2,6 +2,6 @@
 
 namespace Corcel\Acf\Models;
 
-class Text extends BaseField
+class Text extends Generic
 {
 }

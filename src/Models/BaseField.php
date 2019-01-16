@@ -5,6 +5,10 @@ namespace Corcel\Acf\Models;
 use Corcel\Model\Post;
 use Illuminate\Support\Collection;
 
+/**
+ * This class should actually be abstract (e.g. not instantiated), but some
+ * laravel-/corcel-internal methods use it
+ */
 class BaseField extends Post
 {
     /**
@@ -47,7 +51,7 @@ class BaseField extends Post
             return new $className();
         }
 
-        return new self();
+        return new Generic();
     }
 
     /**
@@ -82,12 +86,15 @@ class BaseField extends Post
     }
 
     /**
-     * Get this field's actual value, e.g. the entry in $this->data matching
-     * $this->localKey
+     * Get this field's internal value, e.g. the entry in $this->data matching
+     * $this->localKey. For text fields, this is the text, for image fields the
+     * attachment id etc. Each field should implement a getValueAttribute()
+     * method or value() relation, which returns the parsed value (e.g. the
+     * image object for images)
      *
      * @return string
      */
-    public function getValueAttribute()
+    public function getInternalValueAttribute()
     {
         return $this->data->get($this->localKey);
     }
@@ -95,9 +102,9 @@ class BaseField extends Post
     /**
      * Set the local key, e.g. which entry from $this->data this field refers to
      */
-    public function setLocalKey($value)
+    public function setLocalKey(string $localKey)
     {
-        $this->localKey = $value;
+        $this->localKey = $localKey;
         return $this;
     }
 }

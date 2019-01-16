@@ -2,6 +2,8 @@
 
 namespace Corcel\Acf\Models;
 
+use Corcel\Acf\Support\FlexibleContentLayout;
+
 class FlexibleContent extends BaseField
 {
     protected $with = ['layouts'];
@@ -30,21 +32,21 @@ class FlexibleContent extends BaseField
         return $layouts;
     }
 
-    public function getItemsAttribute()
+    public function getValueAttribute()
     {
         $ret = collect();
 
-        $contentBlocks = unserialize($this->value);
+        $contentBlockTypes = unserialize($this->internal_value);
 
-        foreach ($contentBlocks as $i => $contentBlock) {
-            $block = $this->layout_blocks->get($contentBlock);
+        foreach ($contentBlockTypes as $i => $contentBlockType) {
+            $block = $this->layout_blocks->get($contentBlockType)->keyBy('post_excerpt');
 
             $block->each(function($field) use ($i){
                 $internalName = sprintf('%s_%d_%s', $this->localKey, $i, $field->post_excerpt);
                 $field->setData($this->data)->setLocalKey($internalName);
             });
 
-            $ret->push($block);
+            $ret->push(new FlexibleContentLayout($contentBlockType, $block));
        }
 
        return $ret;

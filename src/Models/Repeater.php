@@ -2,6 +2,8 @@
 
 namespace Corcel\Acf\Models;
 
+use Corcel\Acf\Support\RepeaterLayout;
+
 class Repeater extends BaseField
 {
     protected $with = ['layouts'];
@@ -11,9 +13,9 @@ class Repeater extends BaseField
         return $this->hasMany(BaseField::class, 'post_parent');
     }
 
-    public function getItemsAttribute()
+    public function getValueAttribute()
     {
-        $count = $this->value;
+        $count = $this->internal_value;
         $layouts = $this->layouts->keyBy('type');
 
         $ret = collect();
@@ -32,7 +34,7 @@ class Repeater extends BaseField
                 $row->put($layout->post_excerpt, $field);
             }
 
-            $ret->push($row);
+            $ret->push(new RepeaterLayout($row));
         }
 
         return $ret;
