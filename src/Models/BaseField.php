@@ -7,7 +7,9 @@ use Illuminate\Support\Collection;
 
 /**
  * This class should actually be abstract (e.g. not instantiated), but some
- * laravel-/corcel-internal methods use it
+ * laravel-/corcel-internal methods use it. Each derived class must implement
+ * either getValueAttribute() or a relation value() (these should return the
+ * parsed content)
  */
 class BaseField extends Post
 {
