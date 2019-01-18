@@ -12,25 +12,6 @@ use Illuminate\Database\Eloquent\Builder;
 trait AcfTrait
 {
     /**
-     * Corcel makes it possible to access meta values as regular attributes
-     * (e.g. $post->metavalue) by overwriting __get(). Inside the relations,
-     * getAttribute() is used a lot (instead of __get()), so we need to have
-     * this behaviour here as well
-     */
-    public function getAttribute($key)
-    {
-        $value = parent::getAttribute($key);
-
-        // if there is not regular relation, attribute etc, try to find a meta
-        // value
-        if ($value === null and !empty($this->meta)) {
-            return $this->getMeta($key);
-        }
-
-        return $value;
-    }
-
-    /**
      * Create an instance of the acf relation. Copied from
      * Illuminate\Database\Eloquent\Concerns\HasRelationships::hasOne
      */
