@@ -75,7 +75,7 @@ class BaseField extends Post
                 return Generic::class; // TODO
             case 'true_false':
             case 'boolean':
-                return Generic::class; // TODO
+                return Boolean::class;
             case 'post_object':
             case 'post':
             case 'relationship':

@@ -9,6 +9,6 @@ class Boolean extends Generic
      */
     public function getValueAttribute()
     {
-        return (bool)$this->value;
+        return (bool)$this->internal_value;
     }
 }
