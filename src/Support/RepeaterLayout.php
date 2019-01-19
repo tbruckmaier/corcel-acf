@@ -9,6 +9,8 @@ use Illuminate\Support\Collection;
  */
 class RepeaterLayout
 {
+    use Traits\LayoutBlock;
+
     /**
      * The fields of this layout
      *
@@ -19,13 +21,5 @@ class RepeaterLayout
     public function __construct(Collection $data = null)
     {
         $this->data = $data;
-    }
-
-    /**
-     * Make subfields easily accessible
-     */
-    public function __get($key)
-    {
-        return array_get($this->data, $key);
     }
 }

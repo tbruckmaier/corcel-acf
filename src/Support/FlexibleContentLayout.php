@@ -9,6 +9,8 @@ use Illuminate\Support\Collection;
  */
 class FlexibleContentLayout
 {
+    use Traits\LayoutBlock;
+
     /**
      * Layout block type
      *
@@ -30,14 +32,12 @@ class FlexibleContentLayout
     }
 
     /**
-     * Make subfields easily accessible
+     * Return this layout's type
+     *
+     * @return string
      */
-    public function __get($key)
+    public function getType() : string
     {
-        if ($key === 'type') {
-            return $this->type;
-        }
-
-        return array_get($this->data, $key);
+        return $this->type;
     }
 }
