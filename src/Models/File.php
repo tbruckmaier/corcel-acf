@@ -4,7 +4,7 @@ namespace Tbruckmaier\Corcelacf\Models;
 
 use Corcel\Model\Attachment;
 
-class Image extends BaseField
+class File extends BaseField
 {
     public function attachment()
     {

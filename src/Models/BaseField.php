@@ -69,7 +69,7 @@ class BaseField extends CorcelPost
             case 'img':
                 return Image::class;
             case 'file':
-                return Generic::class; // TODO
+                return File::class;
             case 'gallery':
                 return Generic::class; // TODO
             case 'true_false':
