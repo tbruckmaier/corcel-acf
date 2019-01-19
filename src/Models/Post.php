@@ -40,7 +40,7 @@ class Post extends BaseField
             return $value;
         }
         
-        return @unserialize($value);
+        return (@unserialize($value) ?: []);
     }
 
     /**
