@@ -9,10 +9,20 @@ namespace Tbruckmaier\Corcelacf\Models;
 class Generic extends BaseField
 {
     /**
-     * @return boolean
+     * @return string
      */
     public function getValueAttribute()
     {
         return $this->internal_value;
+    }
+
+    /**
+     * When echoing a field, just return the value 
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string)$this->value;
     }
 }

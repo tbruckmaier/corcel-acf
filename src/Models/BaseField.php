@@ -2,7 +2,7 @@
 
 namespace Tbruckmaier\Corcelacf\Models;
 
-use Corcel\Model\Post;
+use Corcel\Model\Post as CorcelPost;
 use Illuminate\Support\Collection;
 
 /**
@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
  * either getValueAttribute() or a relation value() (these should return the
  * parsed content)
  */
-class BaseField extends Post
+class BaseField extends CorcelPost
 {
     /**
      * @var string
@@ -53,7 +53,6 @@ class BaseField extends Post
             case 'number':
             case 'email':
             case 'url':
-            case 'link':
             case 'password':
             case 'wysiwyg':
             case 'editor':
@@ -64,11 +63,11 @@ class BaseField extends Post
             case 'checkbox':
             case 'radio':
                 return Text::class;
-                break;
+            case 'link':
+                return Link::class;
             case 'image':
             case 'img':
                 return Image::class;
-                break;
             case 'file':
                 return Generic::class; // TODO
             case 'gallery':
@@ -79,7 +78,7 @@ class BaseField extends Post
             case 'post_object':
             case 'post':
             case 'relationship':
-                return Generic::class; // TODO
+                return Post::class;
             case 'page_link':
                 return Generic::class; // TODO
             case 'taxonomy':
