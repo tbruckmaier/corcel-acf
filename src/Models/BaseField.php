@@ -80,7 +80,7 @@ class BaseField extends CorcelPost
             case 'relationship':
                 return Post::class;
             case 'page_link':
-                return Generic::class; // TODO
+                return PageLink::class;
             case 'taxonomy':
             case 'term':
                 return Generic::class; // TODO
