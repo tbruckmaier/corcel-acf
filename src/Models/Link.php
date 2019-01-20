@@ -6,17 +6,59 @@ class Link extends Generic
 {
     use Traits\SerializedValue;
 
+    /**
+     * Whether this field shall return a link array or the url
+     */
+    public function getReturnFormatAttribute()
+    {
+        return array_get($this->config, 'return_format');
+    }
+
     public function getValueAttribute()
     {
-        $value = $this->internal_value;
+        if ($this->return_format === 'url') {
+            return $this->url;
+        }
 
-        return sprintf(
-            '<a href="%s" title="%s" target="%s">%s</a>',
-            $this->url,
-            $this->title,
-            $this->target,
-            $this->title
-        );
+        return $this->internal_value;
+    }
+
+    /**
+     * Render the link as a html link tag
+     *
+     * @param string $linkText optional custom link text
+     * @param array $customAttributes Optional custom attributes added to a <a>
+     *
+     * @return string html
+     */
+    public function render(string $linkText = null, array $customAttributes = [])
+    {
+        $attributes = array_replace([
+            'href' => $this->url,
+            'title' => $this->title,
+            'target' => $this->target,
+        ], $customAttributes);
+
+        $linkText = ($linkText ?: e($this->title));
+
+        $html = '<a';
+        foreach ($attributes as $key => $value) {
+            $html .= ' ' . $key . '="' . e($value) . '"';
+        }
+        $html .= '>' . $linkText . '</a>';
+        return $html;
+    }
+
+    /**
+     * When using this field as string, render html
+     */
+    public function __toString()
+    {
+        if ($this->return_format === 'url') {
+            return $this->url;
+        }
+
+        return $this->render();
     }
 
     public function getUrlAttribute()
