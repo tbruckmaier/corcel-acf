@@ -1,50 +1,53 @@
 <?php
 
 use Corcel\Model\Post;
-use Corcel\Acf\Tests\TestCase;
-use Corcel\Model\User;
+use Tbruckmaier\Corcelacf\Tests\TestCase;
+use Tbruckmaier\Corcelacf\Acf;
+use Tbruckmaier\Corcelacf\Models\Text;
+use Tbruckmaier\Corcelacf\Models\DateTime;
+use Corcel\Model\Meta\PostMeta;
+use Carbon\Carbon;
 
-/**
- * Class CorcelIntegrationTest.
- *
- * @author Junior Grossi <juniorgro@gmail.com>
- */
 class CorcelIntegrationTest extends TestCase
 {
-    protected function setUp()
+    protected function addAcfMetaField(Post $post, $fieldName, $value, $internal)
     {
-        parent::setUp();
-        $this->post = $this->createAcfPost();
-    }
+        $post->meta()->save(factory(PostMeta::class)->create([
+            'meta_key' => $fieldName,
+            'meta_value' => $value,
+        ]));
+        $post->meta()->save(factory(PostMeta::class)->create([
+            'meta_key' => '_' . $fieldName,
+            'meta_value' => $internal,
+        ]));
 
-    /**
-     * Create a sample post with acf fields
-     */
-    protected function createAcfPost()
-    {
-        $post = factory(Post::class)->create();
-
-        $user = factory(User::class)->create();
-        $this->createAcfField($post, 'fake_user', $user->ID, 'user');
-
-        $this->createAcfField($post, 'fake_date_picker', '20161013', 'date_picker');
-
-        return $post;
+        return $post;    
     }
 
     public function testIfCorcelIntegrationIsWorking()
     {
-        $this->assertInstanceOf(User::class, $this->post->acf->fake_user);
+        $post = factory(Post::class)->create();
+
+        $acfField0 = factory(Text::class)->create();
+        $this->addAcfMetaField($post, 'fake_text', 'Lorem ipsum', $acfField0->post_name);
+
+        $acfField1 = factory(DateTime::class)->states('date_picker')->create();
+        $this->addAcfMetaField($post, 'fake_date_picker', '20161013', $acfField1->post_name);
+
+        $acf = new Acf($post);
+
+        $this->assertInstanceOf(Text::class, $acf->fake_text());
+        $this->assertEquals('Lorem ipsum', $acf->fake_text);
+        $this->assertInstanceOf(DateTime::class, $acf->fake_date_picker());
+        $this->assertInstanceOf(Carbon::class, $acf->fake_date_picker);
     }
 
-    public function testUsageOfHelperFunctions()
+    public function testEmptyAcfRelation()
     {
-        $this->assertInstanceOf(User::class, $this->post->acf->user('fake_user'));
-    }
+        $post = factory(Post::class)->create();
+        $acf = new Acf($post);
 
-    public function testFunctionHelperWithSnakeCaseFieldType()
-    {
-        $this->assertEquals('10/13/2016', $this->post->acf->fake_date_picker->format('m/d/Y'));
-        $this->assertEquals('10/13/2016', $this->post->acf->datePicker('fake_date_picker')->format('m/d/Y'));
+        $this->assertNull($acf->nonexisting());
+        $this->assertNull($acf->nonexisting);
     }
 }

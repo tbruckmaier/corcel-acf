@@ -6,12 +6,14 @@ use Corcel\Model\Post as CorcelPost;
 
 class Post extends BaseField
 {
+    use Traits\SerializedMultiple;
+
     /**
-     * Whether "multiple" is checked.
+     * If "multiple" is checked, internal value is serialized
      *
      * @return bool
      */
-    public function getIsMultipleAttribute()
+    public function getIsSerializedAttribute() : bool
     {
         return !empty(array_get($this->config, 'multiple'));
     }
@@ -28,29 +30,13 @@ class Post extends BaseField
     }
 
     /**
-     * If multiple is true, the internal value is a serialized array of post
-     * ids. Otherwise it is a plain single post id
-     *
-     * @return mixed
-     */
-    public function getInternalValueAttribute()
-    {
-        $value = $this->data->get($this->localKey);
-        if (!$this->is_multiple) {
-            return $value;
-        }
-        
-        return (@unserialize($value) ?: []);
-    }
-
-    /**
-     * Get the related post instances (depending on is_multiple)
+     * Get the related post instances (depending on is_serialized)
      *
      * @return mixed
      */
     public function getValueAttribute()
     {
-        if ($this->is_multiple) {
+        if ($this->is_serialized) {
             // it would be nice if we could implement this as a hasMany()
             // relation, but laravel does not support whereIn() in relationships
             return (new CorcelPost)->whereIn('ID', $this->internal_value)->get();

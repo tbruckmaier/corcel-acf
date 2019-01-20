@@ -1,12 +1,12 @@
 <?php
 
-namespace Corcel\Acf\Tests;
+namespace Tbruckmaier\Corcelacf\Tests;
 
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Corcel\Model\Post;
 use Corcel\Model\Meta\PostMeta;
-use Corcel\Acf\Models\AcfField;
-use Corcel\Acf\Models\AcfFieldGroup;
+use Tbruckmaier\Corcelacf\Models\BaseField;
+use Tbruckmaier\Corcelacf\Models\BaseFieldGroup;
 use Corcel\Model\Option;
 
 class TestCase extends OrchestraTestCase
@@ -47,7 +47,6 @@ class TestCase extends OrchestraTestCase
      */
     private function configureDatabaseConfig($app)
     {
-        // dd(base_path());
         $app['config']->set('database.connections.wp', [
             'driver'   => 'sqlite',
             'database' => ':memory:',
@@ -61,6 +60,16 @@ class TestCase extends OrchestraTestCase
         ]);
 
         $app['config']->set('database.default', 'wp');
+    }
+
+    protected function addData(BaseField $acfField, $key, $value)
+    {
+        return $this->setData($acfField, [$key => $value])->setLocalKey($key);
+    }
+
+    protected function setData(BaseField $acfField, $data)
+    {
+        return $acfField->setData(collect($data));
     }
 
     /**
@@ -85,14 +94,14 @@ class TestCase extends OrchestraTestCase
 
         $override['post_name'] = $internal;
 
-        $acffield = factory(AcfField::class)->states($states)->create($override);
-        return $acffield;
+        $BaseField = factory(BaseField::class)->states($states)->create($override);
+        return $BaseField;
     }
 
     /**
      * Create an acf field for use in an option page
      */
-    protected function createOptionAcfField(AcfFieldGroup $fieldGroup, $prefix, $fieldName, $value, $states = [], $override = [], $internal = null)
+    protected function createOptionAcfField(BaseFieldGroup $fieldGroup, $prefix, $fieldName, $value, $states = [], $override = [], $internal = null)
     {
         if (!$internal) {
             $internal = 'field_' . str_random(13);
@@ -111,7 +120,7 @@ class TestCase extends OrchestraTestCase
         $override['post_parent'] = $fieldGroup->ID;
         $override['post_excerpt'] = $fieldName;
 
-        $acffield = factory(AcfField::class)->states($states)->create($override);
-        return $acffield;
+        $BaseField = factory(BaseField::class)->states($states)->create($override);
+        return $BaseField;
     }
 }

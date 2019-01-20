@@ -59,10 +59,11 @@ class BaseField extends CorcelPost
             case 'oembed':
             case 'embed':
             case 'color_picker':
+                return Text::class;
             case 'select':
             case 'checkbox':
             case 'radio':
-                return Text::class;
+                return Choice::class;
             case 'link':
                 return Link::class;
             case 'image':
@@ -89,7 +90,7 @@ class BaseField extends CorcelPost
             case 'date_picker':
             case 'date_time_picker':
             case 'time_picker':
-                return Generic::class; // TODO
+                return DateTime::class;
             case 'repeater':
                 return Repeater::class;
             case 'flexible_content':

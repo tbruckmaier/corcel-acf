@@ -4,18 +4,8 @@ namespace Tbruckmaier\Corcelacf\Models;
 
 use Corcel\Model\Post as CorcelPost;
 
-class PageLink extends BaseField
+class PageLink extends Post
 {
-    /**
-     * Relation to the linked post
-     *
-     * @return CorcelPost
-     */
-    public function relation()
-    {
-        return $this->hasOne(CorcelPost::class, 'ID', 'internal_value');
-    }
-
     /**
      * Get the the related post
      *
@@ -23,6 +13,14 @@ class PageLink extends BaseField
      */
     public function getValueAttribute()
     {
-        return $this->relation;
+        $page = $this->relationSingle;
+
+        $domain = substr($page->guid, 0, strpos($page->guid, '?'));
+
+        if (empty($page->post_name)) {
+            return $page->guid;
+        }
+
+        return "{$domain}{$page->post_name}/";
     }
 }
