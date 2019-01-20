@@ -4,7 +4,7 @@ namespace Tbruckmaier\Corcelacf\Models;
 
 class Choice extends Generic
 {
-    use Traits\SerializedMultiple;
+    use Traits\SerializedSometimes;
 
     public function getIsSerializedAttribute()
     {

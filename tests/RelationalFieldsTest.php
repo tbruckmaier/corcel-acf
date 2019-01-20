@@ -51,11 +51,7 @@ class RelationalFieldsTests extends TestCase
         $pageIds[] = factory(Post::class)->states('page')->create(['post_title' => 'test #2'])->ID;
         $this->createAcfField($post, 'fake_relationship', serialize($pageIds), 'relationship');
 
-        $term = factory(CorcelTerm::class)->create(['slug' => 'uncategorized']);
-        $this->createAcfField($post, 'fake_taxonomy_single', $term->term_id, 'taxonomy_single');
 
-        $term2 = factory(CorcelTerm::class)->create(['slug' => 'test-term']);
-        $this->createAcfField($post, 'fake_taxonomy', serialize([$term->term_id, $term2->term_id]), 'taxonomy');
 
 
         $user = factory(CorcelUser::class)->create(['user_login' => 'admin']);

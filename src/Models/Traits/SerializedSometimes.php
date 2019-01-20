@@ -3,10 +3,9 @@
 namespace Tbruckmaier\Corcelacf\Models\Traits;
 
 /**
- * For fields which have a flag "multiple" which states, if the value is in
- * serialized form or not
+ * For fields which are sometimes serialized
  */
-trait SerializedMultiple
+trait SerializedSometimes
 {
     /**
      * Whether the internal value is serialized.

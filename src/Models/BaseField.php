@@ -84,7 +84,7 @@ class BaseField extends CorcelPost
                 return PageLink::class;
             case 'taxonomy':
             case 'term':
-                return Generic::class; // TODO
+                return Term::class;
             case 'user':
                 return Generic::class; // TODO
             case 'date_picker':

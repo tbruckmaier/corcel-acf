@@ -6,7 +6,7 @@ use Corcel\Model\Post as CorcelPost;
 
 class Post extends BaseField
 {
-    use Traits\SerializedMultiple;
+    use Traits\SerializedSometimes;
 
     /**
      * If "multiple" is checked, internal value is serialized
