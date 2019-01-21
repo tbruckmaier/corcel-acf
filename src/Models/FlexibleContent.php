@@ -6,7 +6,14 @@ use Tbruckmaier\Corcelacf\Support\FlexibleContentLayout;
 
 class FlexibleContent extends BaseField
 {
+    use Traits\SerializedSometimes;
+
     protected $with = ['layouts'];
+
+    public function getIsSerializedAttribute()
+    {
+        return true;
+    }
 
     public function layouts()
     {
@@ -36,9 +43,7 @@ class FlexibleContent extends BaseField
     {
         $ret = collect();
 
-        $contentBlockTypes = unserialize($this->internal_value);
-
-        foreach ($contentBlockTypes as $i => $contentBlockType) {
+        foreach ($this->internal_value as $i => $contentBlockType) {
             $block = $this->layout_blocks->get($contentBlockType)->keyBy('post_excerpt');
 
             $block = $block->map(function($field) use ($i){

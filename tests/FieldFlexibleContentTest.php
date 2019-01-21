@@ -93,4 +93,16 @@ class FieldFlexibleContentTest extends TestCase
         $this->assertInstanceOf(Collection::class, $acfField->value);
         $this->assertEquals(1, $acfField->value->count()); // only ONE field
     }
+
+    public function testEmptyFlexibleContent()
+    {
+        $acfField = $this->createFcField();
+
+        $data = ['fake_flexible_content' => ''];
+
+        $this->setData($acfField, $data)->setLocalKey('fake_flexible_content');
+
+        $this->assertInstanceOf(Collection::class, $acfField->value);
+        $this->assertEquals(0, $acfField->value->count());
+    }
 }
