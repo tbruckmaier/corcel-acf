@@ -12,7 +12,7 @@ use Corcel\Model\Post as CorcelPost;
 
 class FieldFlexibleContentTest extends TestCase
 {
-    public function testFlexibleContentField()
+    protected function createFcField()
     {
         $acfField = factory(FlexibleContent::class)->create();
 
@@ -34,6 +34,12 @@ class FieldFlexibleContentTest extends TestCase
             'post_excerpt' => 'post',
         ]);
 
+        return $acfField;
+    }
+
+    public function testFlexibleContentField()
+    {
+        $acfField = $this->createFcField();
 
         $post = factory(CorcelPost::class)->create();
         $multiplePosts = factory(CorcelPost::class, 5)->create();
@@ -67,5 +73,24 @@ class FieldFlexibleContentTest extends TestCase
         $this->assertInstanceOf(Collection::class, $layout2->post);
         $this->assertEquals(5, $layout2->post->count());
         $this->assertInstanceOf(CorcelPost::class, $layout2->post->first());
+    }
+
+    public function testFlexibleContentOldMetadata()
+    {
+        $acfField = $this->createFcField();
+
+        // when a fc field has been saved before, and then a layout gets
+        // removed, the old meta data is still in the database. Make sure we do
+        // not return that
+        $data = [
+            'fake_flexible_content' => serialize(['normal_text']),
+            'fake_flexible_content_0_text' => 'Lorem ipsum',
+            'fake_flexible_content_1_text' => 'Lorem ipsum obsolete',
+        ];
+
+        $this->setData($acfField, $data)->setLocalKey('fake_flexible_content');
+
+        $this->assertInstanceOf(Collection::class, $acfField->value);
+        $this->assertEquals(1, $acfField->value->count()); // only ONE field
     }
 }
