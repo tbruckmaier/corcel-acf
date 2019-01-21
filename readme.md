@@ -1,8 +1,8 @@
 # Corcel ACF Plugin
 
-[![Travis](https://travis-ci.org/corcel/acf.svg?branch=master)](https://travis-ci.org/corcel/acf?branch=master)
-[![Packagist](https://img.shields.io/packagist/v/corcel/acf.svg)](https://github.com/corcel/acf/releases)
-[![Packagist](https://img.shields.io/packagist/dt/corcel/acf.svg)](https://packagist.org/packages/corcel/acf)
+[![Travis](https://travis-ci.org/tbruckmaier/corcel-acf.svg?branch=master)](https://travis-ci.org/tbruckmaier/corcel-acf?branch=master)
+[![Packagist](https://img.shields.io/packagist/v/tbruckmaier/corcel-acf.svg)](https://github.com/ctbruckmaier/corcel-acf/releases)
+[![Packagist](https://img.shields.io/packagist/dt/tbruckmaier/corcel-acf.svg)](https://packagist.org/packages/tbruckmaier/corcel-acf)
 
 > Fetch all Advanced Custom Fields (ACF) fields inside Corcel easily.
 
@@ -11,12 +11,12 @@ This Corcel plugin allows you to fetch WordPress custom fields created by the [A
 For more information about how Corcel works please visit [the repository](http://github.com/jgrossi/corcel).
 
 * [Installation](#installation)
+* [Features](#features)
 * [Usage](#usage)
-    - [The Idea](#the-idea)
-    - [What is Missing](#what-is-missing)
+    - [Functionality](#functionality)
     - [Fields](#fields)
-* [Contributing](#contributing)
-    - [Running Tests](#running-tests)
+    - [Custom field types](#custom-field-types)
+* [Running Tests](#running-tests)
 * [Licence](#licence)
 
 # Installation
@@ -24,107 +24,177 @@ For more information about how Corcel works please visit [the repository](http:/
 To install the ACF plugin for Corcel is easy:
 
 ```
-composer require corcel/acf
+composer require tbruckmaier/corcel-acf
 ```
 
 Corcel is required for this plugin, but don't worry, if it's missing it will be installed as well.
 
+# Features
+
+* load acf fields via eloquent relations
+* load acf data for a post only once and save sql queries
+* return suitable data types for the different acf fields (see table below), including a fallback for unknown field types
+* support for deeply encapsulated fields (e.g. a image in a repeater in a flexible content)
+* TODO: consider custom post types
+* possible to access acf field config and internal attributes
+* TODO: support for option page
+* TODO: support preloading of acf fields
+
 # Usage
 
-This is a development version so the usage can change further. The desired behavior of this plugin is to allow this:
+Your `Post` object must know about the acf relations, preferably use the included Trait:
 
 ```php
-$post = Post::find(1);
-echo $post->acf->url; // returns the url custom field created using ACF
+
+use \Corcel\Models\Post as BasePost;
+use Tbruckmaier\Corcelacf\AcfTrait;
+
+class Post extends BasePost
+{
+    // includes getAcfAttribute()
+    use AcfTrait;
+}
+
 ```
 
-## Performance
+This just adds a `getAcfAttribute()` method, which returns an instance of the base `Tbruckmaier\Corcelacf\Acf` class (this overwrites the corcel-internal default support for the outdated Corcel acf plugin: https://github.com/corcel/acf/tree/. If you would like to use it in parallel, you can define the `getAcfAttribute` method by yourself with a different name)
 
-When using something like `$post->acf->url` the plugin has to make some extra SQL queries to get the field type according ACF approach. So we created another way to get that without making those extra queries. You have only the inform the plugin what is the post type, as a function:
+Acf fields can now be accessed:
 
- ```php
- // Extra queries way
- echo $post->acf->author_username; // it's a User field
+```php
 
- // Without extra queries
- echo $post->acf->user('author_username');
- ```
+use Corcel\Models\Post;
+use Corcel\Models\Attachment;
+use Tbruckmaier\Corcelacf\Models\Text;
+use Tbruckmaier\Corcelacf\Models\Image;
 
- > PS: The method names should be written in `camelCase()` format. So, for example, for the field type `date_picker` you should write `$post->acf->datePicker('fieldName')`. The plugin does the conversion from `camelCase` to `snake_case` for you.
+$post = Post::find(1);
 
-## The Idea
+// post has a text field named "title" and a image field called "thumbnail"
 
-Using the default `$post->meta->field_name` in Corcel returns the value of the `meta_value` column in the `wp_postmeta` table. It can be a string, an integer or even a serialized array. The problem is, when you're using ACF this value can be more than that. If you have an integer, for example, it can be a `post id`, an `user id` or even an array of `posts ids`.
+$post->acf->title; // (string) the parsed value, for instance "Example Page #1"
+$post->acf->title(); // an instance of the underlying Text::class
+$post->acf->title()->value; // the parsed value, $post->acf->title is a short version of this
+$post->acf->title()->internal_value; // the unparsed value, for text's this is the same as value
+$post->acf->title()->config; // the acf field config array defined in wordpress, sth like ['type' => 'text', 'instructions' => 'The site title', ...]
 
-ACF has to make 2 (two) SQL queries to find out the field type, so according the type it has different behavior with the `meta_value`. For example, if the value is `45` and the `post type` is `post_object`, the value `45` is a post with ID `45`. So, in this case, Corcel should return a `Corcel\Post` instance instead of just an integer.
+$post->acf->thumbnail; // an instance of Attachment::class representing the specified image
+$post->acf->thumbnail(); // an instance of the underlying Image::class
+$post->acf->thumbnail()->value; // again the same Attachment::class
+$post->acf->thumbnail()->internal_value; // the unparsed value from the `postmeta` table, in this case the attachment id
+$post->acf->thumbnail()->config; // the thumbnail acf field config array (['type' => 'image', ...])
+```
 
-First ACF fetches the `meta_value` in `wp_postmeta` table, where the `meta_key` is something like `_field_name` and the post ID is the ID of the post you want the custom field. The returned value is the `field key` and it looks like this `field_57f421a2b81bd`. With this key it fetches the corresponding post in `wp_posts`, where `post_name = 'field_57f421a2b81bd'`. With the results it gets the `post_content` value, a serialized array, deserialize it and gets the content on the `type` key. This is the field type. According it the ACF (and also this plugin) does the right thing.
+To determine which model is used for which field, the acf field's `type` variable is used. See below for a full list.
 
-This plugin works with a basic logic inside `Corcel\Acf\Field\BasicField` abstract class, that has a lot of useful functions to return the `field key`, the `value`, etc. The `Corcel\Acf\FieldFactory` is responsible to return the correct field instance according the field type, so, if the field type is `post_object` it return an instance of `Corcel\Acf\Field\PostObject`, and it will returns in the `get()` method an instance of `Corcel\Post`.
+## Functionality
 
-## What is Missing
+Wordpress stores the config of each acf field in the table `wp_posts` as a custom post type `acf-field`. `post_content` contains the serialized config array, which contains the acf field type (`type`) and everything else you can specify when creating acf fields. Some of these values are important for parsing, some only specify things on how to display the field in wordpress itself.
 
-First we should create the fields classes and the test cases. After we have to setup how Corcel is going to work with the `corcel/acf` plugin, returning the custom field value in the format `$post->meta->field` or maybe `$post->acf->field` having different behavior (done!).
+When a post is saved in Wordpress with acf fields, those values are stored as the post's meta data in the table `wp_postmeta`. Each acf field saves two values: the according acf field name in `wp_posts` and the actual value. Depending on the acf field type and configuration, the saved value differs (text field values are stored as plain text, relation fields like image as the attachment id, and repeater & flexible content fields as a whole bunch of different fields).
 
- - Create more unit tests for `Repeater` field;
- - Implement the `Flexible Content` field with unit tests (done!);
- - Improve performance. Currently the plugin makes one SQL query for each field. This goal is to improve that using `whereIn()` clauses.
+For instance, the example fields from above are saved like this:
+```
+| meta_key   | meta_value          |
+|:-----------|:--------------------|
+| _title     | field_5bdae4fb72c4a |
+| title      | Example Page #1     |
+| _thumbnail | field_5c3b6543480d6 |
+| thumbnail  | 5                   |
+```
 
- Some fields are still missing (check table below and contribute).
+When loading a post with corcel, the meta data is automatically retrieved from the database anyway. The base `Acf` class uses this data and passes it to all fields (and possibly subfields), so no extra queries are needed. Just relational fields like `Image` need another query to find the correct `Attachment` class (though if you are only interested in the attachment's id, you can access `$post->acf->thumbnail()->internal_value` and no additional query is used).
 
 ## Fields
 
-| Field             | Status    | Developer                             | Returns |
-|-------------------|-----------|---------------------------------------| --------|
-| Text              | ok        | [@jgrossi](http://github.com/jgrossi) | `string`  |
-| Textarea          | ok        | [@jgrossi](http://github.com/jgrossi) | `string`  |
-| Number            | ok        | [@jgrossi](http://github.com/jgrossi) | `number`  |
-| E-mail            | ok        | [@jgrossi](http://github.com/jgrossi) | `string`  |
-| URL               | ok        | [@jgrossi](http://github.com/jgrossi) | `string`  |
-| Password          | ok        | [@jgrossi](http://github.com/jgrossi) | `string`  |
-| WYSIWYG (Editor)  | ok        | [@jgrossi](http://github.com/jgrossi) | `string`  |
-| oEmbed            | ok        | [@jgrossi](http://github.com/jgrossi) | `string`  |
-| Image             | ok        | [@jgrossi](http://github.com/jgrossi) | `Corcel\Acf\Field\Image` |
-| File              | ok        | [@jgrossi](http://github.com/jgrossi) | `Corcel\Acf\Field\File` |
-| Gallery           | ok        | [@jgrossi](http://github.com/jgrossi) | `Corcel\Acf\Field\Gallery` |
-| Select            | ok        | [@jgrossi](http://github.com/jgrossi) | `string` or `array` |
-| Checkbox          | ok        | [@jgrossi](http://github.com/jgrossi) | `string` or `array` |
-| Radio             | ok        | [@jgrossi](http://github.com/jgrossi) | `string` |
-| True/False        | ok        | [@jgrossi](http://github.com/jgrossi) | `boolean` |
-| Post Object       | ok        | [@jgrossi](http://github.com/jgrossi) | `Corcel\Post` |
-| Page Link         | ok        | [@jgrossi](http://github.com/jgrossi) | `string` |
-| Relationship      | ok        | [@jgrossi](http://github.com/jgrossi) | `Corcel\Post` or `Collection` of `Post` |
-| Taxonomy          | ok        | [@jgrossi](http://github.com/jgrossi) | `Corcel\Term` or `Collection` of `Term` |
-| User              | ok        | [@jgrossi](http://github.com/jgrossi) | `Corcel\User` |
-| Google Map        | missing   |                                       |
-| Date Picker       | ok        | [@jgrossi](http://github.com/jgrossi) | `Carbon\Carbon` |
-| Date Time Picker  | ok        | [@jgrossi](http://github.com/jgrossi) | `Carbon\Carbon` |
-| Time Picker       | ok        | [@jgrossi](http://github.com/jgrossi) | `Carbon\Carbon` |
-| Color Picker      | ok        | [@jgrossi](http://github.com/jgrossi) | `string` |
-| Repeater          | ok        | [@jgrossi](http://github.com/jgrossi) | `Collection` of fields |
-| Flexible Content  | ok        | [@marcoboom](http://github.com/marcoboom) | `Collection` |
+| Field             | Internal class  | Parsed response                               | __toString()        |
+|:------------------|:----------------|:----------------------------------------------|:--------------------|
+| Text              | Text            | `string`                                      |                     |
+| Textarea          | Text            | `string`                                      |                     |
+| Number            | Text            | `string`                                      |                     |
+| E-mail            | Text            | `string`                                      |                     |
+| URL               | Text            | `string`                                      |                     |
+| Password          | Text            | `string`                                      |                     |
+| WYSIWYG (Editor)  | Text            | `string`                                      |                     |
+| oEmbed            | Text            | `string`                                      |                     |
+| Image             | Image           | `Corcel\Model\Attachment`                     |                     |
+| File              | File            | `Corcel\Model\Attachment`                     |                     |
+| Gallery           | Gallery         | `Collection` of `Corcel\Model\Attachment`     |                     |
+| Select            | Choice          | `string` or `array`                           |                     |
+| Checkbox          | Choice          | `string` or `array`                           |                     |
+| Radio             | Choice          | `string`                                      |                     |
+| True/False        | Boolean         | `boolean`                                     |                     |
+| Post Object       | Post            | `Corcel\Model\Post` or `Collection` of `Post` |                     |
+| Relationship      | Post            | `Corcel\Model\Post` or `Collection` of `Post` |                     |
+| Page Link         | PageLink        | `string`                                      |                     |
+| Link              | Link            | `array` or `string`                           | HTML <a> tag or url |
+| Taxonomy          | Term            | `Corcel\Term` or `Collection` of `Term`       |                     |
+| User              | Generic TODO    | `Corcel\User`                                 |                     |
+| Date Picker       | DateTime        | `Carbon\Carbon`                               |                     |
+| Date Time Picker  | DateTime        | `Carbon\Carbon`                               |                     |
+| Time Picker       | DateTime        | `Carbon\Carbon`                               |                     |
+| Color Picker      | Text            | `string`                                      |                     |
+| Repeater          | Repeater        | `Collection` of `RepeaterLayout`              |                     |
+| Flexible Content  | FlexibleContent | `Collection` of `FlexibleContentLayout`       |                     |
+| (everything else) | Generic         | string                                        |                     |
 
-# Contributing
+### Link
 
-All contributions are welcome. Before submitting your Pull Request take a look on the following guidelines:
+The link field reacts on the configured return value, so it returns either an array with `title`, `text` and `url` or just the `url` as string.
 
-- Make your changes in a new git branch, based on the `develop` branch: `git checkout -b my-fix-branch develop`;
-- Create your patch/feature, including appropriate test cases. Tests are necessary to make sure what you did is working and did not break nothing in the plugin;
-- Run the unit tests and ensure that all tests are passing. Please, when submitting your PR paste the results of the `phpunit` command to facilitate the approval job;
-- In GitHub, send a pull request to `corcel/acf:develop`, **always**. Do not send PR to our `master` branch! We encourage you to use `git flow` (https://github.com/petervanderdoes/gitflow-avh) workflow to make your life easier. It' not necessary, but it'll also be good for your development career;
-- Make sure your code is following the `PSR-2` conventions (http://www.php-fig.org/psr/psr-2/).
+The field has a `render()` method, which renders a html <a> tag. `render()` supports custom link text and custom attributes: `render('<img src="img.jpg" />', ['class' => 'class-1'])` returns `<a href="#" target="_blank" class="class-1" title="acf title"><img src="img.jpg" /></a>`
 
-## Running Tests
+When accessing the field as string (`(string)$post->acf->link()` or in blade `{!! $post->acf->link !!}`), `render()` is called, so a html string is returned.`
 
-To run the phpunit tests, execute `phpunit` (if you have a global PHPUnit executable) or try the following command:
+### Repeater & Flexible Content
+
+Repeater and flexible content fields return a `Collection` of `RepeaterLayout` respectively `FlexibleContentLayout`. These models act like the original `Acf` class: when accessing fields as attributes, the parsed value of the field is returned, otherwise a field like in the table above.
+
+```php
+use Corcel\Models\Post;
+use Tbruckmaier\Corcelacf\Models\Text;
+use Tbruckmaier\Corcelacf\Models\Repeater;
+use Tbruckmaier\Corcelacf\Models\FlexibleContent;
+use Tbruckmaier\Corcelacf\Support\RepeaterLayout;
+use Tbruckmaier\Corcelacf\Support\FlexibleContent;
+
+$post = Post::find(1);
+
+$post->acf->main_repeater(); // Repeater
+$repeaterFields = $post->acf->main_repeater; // Collection of RepeaterLayout
+$repeaterFields->first()->title(); // Text::class
+$repeaterFields->first()->title; // parsed response "Main repeater title #1"
+$repeaterFields->get(1)->title(); // Text::class
+$repeaterFields->get(1)->title; // "Main repeater title #2"
+
+$post->acf->main_content(); // FlexibleContent
+$fcLayouts = $post->acf->main_content; // Collection of FlexibleContentLayout
+
+$fcLayouts->get(0)->getType(); // layout type of the first block, for example "text_with_image"
+$fcLayouts->get(0)->text(); // Text::class
+$fcLayouts->get(0)->text; // "Text of the first content block"
+$fcLayouts->get(0)->image(); // Image::class
+$fcLayouts->get(0)->image; // Attachment::class (linked image)
+
+$fcLayouts->get(1)->getType(); // layout type of the second block, for example "accordion"
+$fcLayouts->get(1)->accordion_title; // "Accordion #1"
+$fcLayouts->get(1)->accordion_items(); // Repeater::class
+$fcLayouts->get(1)->accordion_items; // Collection of RepeaterLayouts
+$fcLayouts->get(1)->accordion_items->first()->title; // "First accordion element"
+$fcLayouts->get(1)->accordion_items->first()->content; // "First accordion content..."
+```
+
+## Custom field types
+
+TODO: it should be possible to have a config to use own field types. Currently just corcel models can be configured (https://github.com/corcel/corcel#-custom-post-type)
+
+# Running Tests
+
+To run the phpunit tests, execute `phpunit`:
 
 ```
 ./vendor/bin/phpunit
 ```
-
-You should import the `database.sql` file to a database inside your local environment to make the tests working. Just unzip the `tests/config/database.sql.zip` file and set the database, user and password fields in `tests/config/bootstrap.php`.
-
-> If you want to access the WordPress Admin Panel just use username as `admin` and password `123456`.
 
 # Licence
 
