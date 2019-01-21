@@ -52,5 +52,9 @@ class FieldLinkTest extends TestCase
         $this->addData($acfField, 'fake_link', serialize($data));
 
         $this->assertEquals('https://www.example.com/example', $acfField->value);
+        $this->assertEquals(
+            '<a href="https://www.example.com/example" title="test &quot;title&quot;" target="_blank">test &quot;title&quot;</a>',
+            (string)$acfField
+        );
     }
 }

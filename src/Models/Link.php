@@ -54,10 +54,6 @@ class Link extends Generic
      */
     public function __toString()
     {
-        if ($this->return_format === 'url') {
-            return $this->url;
-        }
-
         return $this->render();
     }
 
