@@ -33,7 +33,7 @@ class AcfRelation extends HasOne
         }
 
         $data = $model->meta->pluck('meta_value', 'meta_key');
-        return $acfField->setData($data)->setLocalKey(substr($this->localKey, 1));
+        return (clone $acfField)->setData($data)->setLocalKey(substr($this->localKey, 1));
     }
 
     /**
