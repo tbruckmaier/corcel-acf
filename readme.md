@@ -33,16 +33,16 @@ Corcel is required for this plugin, but don't worry, if it's missing it will be 
 
 * load acf fields via eloquent relations
 * load acf data for a post only once and save sql queries
+* support for eager loading of acf relations
 * return suitable data types for the different acf fields (see table below), including a fallback for unknown field types
 * support for deeply encapsulated fields (e.g. a image in a repeater in a flexible content)
 * TODO: consider custom post types
 * possible to access acf field config and internal attributes
 * TODO: support for option page
-* TODO: support preloading of acf fields
 
-# Usage
+# Basic usage
 
-Your `Post` object must know about the acf relations, preferably use the included Trait:
+The easiest way to create the acf relations is the included trait:
 
 ```php
 
@@ -51,15 +51,16 @@ use Tbruckmaier\Corcelacf\AcfTrait;
 
 class Post extends BasePost
 {
-    // includes getAcfAttribute()
     use AcfTrait;
+
+    public static function boot()
+    {
+        self::addAcfRelations(['title', 'thumbnail']);
+    }
 }
 
 ```
-
-This just adds a `getAcfAttribute()` method, which returns an instance of the base `Tbruckmaier\Corcelacf\Acf` class (this overwrites the corcel-internal default support for the outdated Corcel acf plugin: https://github.com/corcel/acf/tree/. If you would like to use it in parallel, you can define the `getAcfAttribute` method by yourself with a different name)
-
-Acf fields can now be accessed:
+This dynamically creates the relationships `acf_title()` and `acf_thumbnail()`. Acf fields can now be accessed:
 
 ```php
 
@@ -72,6 +73,15 @@ $post = Post::find(1);
 
 // post has a text field named "title" and a image field called "thumbnail"
 
+$post->acf_title; // an instance of Text::class
+$post->acf_title->value; // "Example title"
+$post->acf_thumbnail; // Image::class
+$post->acf_thumbnail->value; // an instance of Attachment::class representing the specified image
+```
+
+To make things easier, `AcfTrait` also includes `getAcfAttribute`, which returns an instance of the helper class `Acf` (this replaces the outdated corcel acf plugin from https://github.com/corcel/acf). Relation can also be accessed like:
+
+```php
 $post->acf->title; // (string) the parsed value, for instance "Example Page #1"
 $post->acf->title(); // an instance of the underlying Text::class
 $post->acf->title()->value; // the parsed value, $post->acf->title is a short version of this
@@ -103,9 +113,49 @@ For instance, the example fields from above are saved like this:
 | thumbnail  | 5                   |
 ```
 
-When loading a post with corcel, the meta data is automatically retrieved from the database anyway. The base `Acf` class uses this data and passes it to all fields (and possibly subfields), so no extra queries are needed. Just relational fields like `Image` need another query to find the correct `Attachment` class (though if you are only interested in the attachment's id, you can access `$post->acf->thumbnail()->internal_value` and no additional query is used).
+When loading a post with corcel, the meta data is automatically retrieved from the database anyway. If the static propery `$acfRelations` is defined in the model's `boot()` method, 
+
+The base `Acf` class uses this data and passes it to all fields (and possibly subfields), so no extra queries are needed. Just relational fields like `Image` need another query to find the correct `Attachment` class (though if you are only interested in the attachment's id, you can access `$post->acf->thumbnail()->internal_value` and no additional query is used).
+
+This just adds a `getAcfAttribute()` method, which returns an instance of the base `Tbruckmaier\Corcelacf\Acf` class (this overwrites the corcel-internal default support for the outdated Corcel acf plugin: https://github.com/corcel/acf/tree/. If you would like to use it in parallel, you can define the `getAcfAttribute` method by yourself with a different name)
+
+
+## Advanced usage
+
+### Defining acf relations
+
+Instead of using the model's `boot()` method to create relationships on the fly, one can also define them manually:
+
+```php
+use Corcel\Models\Post as BasePost;
+use Tbruckmaier\Corcelacf\AcfTrait;
+
+class Post extends BasePost
+{
+    use AcfTrait;
+
+    public function thumbnail()
+    {
+        return $this->hasAcf('thumbnail');
+    }
+}
+
+$post = Post::find(1);
+$post->thumbnail; // Image::class
+$post->thumbnail->value; // Attachment
+```
+
+### Eager loading
+
+If you want to eager-load acf fields, you can use the standard eloquent syntax. If the relationships are created from `$acfRelations`, do not forget to pass the prefix:
+
+```php
+$posts = Post::all()->load('acf_thumbnail');
+```
 
 ## Fields
+
+The following field types are supported (everything else just returns a `Generic` field):
 
 | Field             | Internal class  | Parsed response                               | __toString()        |
 |:------------------|:----------------|:----------------------------------------------|:--------------------|

@@ -3,7 +3,7 @@
 use Tbruckmaier\Corcelacf\Models\PageLink;
 use Tbruckmaier\Corcelacf\Tests\TestCase;
 use Corcel\Model\Attachment;
-use Corcel\Model\Post;
+use Tbruckmaier\Corcelacf\Tests\Models\Post;
 
 class FieldPageLinkTest extends TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-use Corcel\Model\Post;
+use Tbruckmaier\Corcelacf\Tests\Models\Post;
 
 use Illuminate\Support\Str;
 
