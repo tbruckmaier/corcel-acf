@@ -39,7 +39,7 @@ trait AcfTrait
      */
     public static function addAcfRelations(array $acfRelations)
     {
-        self::$acfRelations = array_replace(self::getAcfRelations(), $acfRelations);
+        self::$acfRelations = array_merge(self::getAcfRelations(), $acfRelations);
     }
 
     /**
