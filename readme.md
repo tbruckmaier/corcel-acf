@@ -56,6 +56,7 @@ class Post extends BasePost
     public static function boot()
     {
         self::addAcfRelations(['title', 'thumbnail']);
+        parent::boot();
     }
 }
 
