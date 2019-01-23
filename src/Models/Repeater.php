@@ -21,11 +21,9 @@ class Repeater extends BaseField
         $ret = collect();
 
         for ($i = 0; $i < $count; $i++) {
-
             $row = collect();
 
             foreach ($layouts as $layout) {
-
                 $field = $layout->replicate();
                 $internalName = sprintf('%s_%d_%s', $this->localKey, $i, $layout->post_excerpt);
 

@@ -17,7 +17,7 @@ class Generic extends BaseField
     }
 
     /**
-     * When echoing a field, just return the value 
+     * When echoing a field, just return the value
      *
      * @return string
      */

@@ -20,7 +20,7 @@ class BaseField extends CorcelPost
 
     /**
      * Holds the complete post's meta data
-     * 
+     *
      * @var Collection
      */
     protected $data;

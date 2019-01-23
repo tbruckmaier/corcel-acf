@@ -26,7 +26,7 @@ trait AcfTrait
         foreach (self::getAcfRelations() as $relationName) {
             $methodName = 'acf_' . $relationName;
 
-            self::addExternalMethod($methodName, function() use ($relationName) {
+            self::addExternalMethod($methodName, function () use ($relationName) {
                 return $this->hasAcf($relationName);
             });
         }
