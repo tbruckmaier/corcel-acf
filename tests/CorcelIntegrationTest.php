@@ -12,17 +12,26 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CorcelIntegrationTest extends TestCase
 {
+    protected $acfFields;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->acfFields = [
+            factory(Text::class)->create(),
+            factory(DateTime::class)->states('date_picker')->create(),
+        ];
+    }
+
     protected function createPost($fakeText = 'Lorem ipsum')
     {
         Post::addAcfRelations(['fake_text', 'fake_date_picker']);
 
         $post = factory(Post::class)->create();
 
-        $acfField0 = factory(Text::class)->create();
-        $this->addAcfMetaField($post, 'fake_text', $fakeText, $acfField0->post_name);
+        $this->addAcfMetaField($post, 'fake_text', $fakeText, $this->acfFields[0]->post_name);
 
-        $acfField1 = factory(DateTime::class)->states('date_picker')->create();
-        $this->addAcfMetaField($post, 'fake_date_picker', '20161013', $acfField1->post_name);
+        $this->addAcfMetaField($post, 'fake_date_picker', '20161013', $this->acfFields[1]->post_name);
 
         return $post;
     }
