@@ -1,6 +1,8 @@
 preset: psr2
-risky: false
-linting: true
+risky: true
 finder:
-  name:
-    - "*.php"
+  exclude:
+    - vendor
+    - tests
+  name: "*.php"
+  not-name: "*.blade.php"
