@@ -35,6 +35,7 @@ class Term extends BaseField
         }
 
         if ($this->is_multiple) {
+            // FIXME add sorting
             return (new CorcelTerm)->whereIn('term_id', $this->internal_value)->get();
         }
 
