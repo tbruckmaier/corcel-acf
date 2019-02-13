@@ -44,7 +44,7 @@ class Post extends BaseField
             // order, see https://stackoverflow.com/questions/40731863/sort-
             // collection-by-custom-order-in-eloquent
             return (new CorcelPost)->whereIn('ID', $this->internal_value)->get()
-                ->sortBy(function($model) {
+                ->sortBy(function ($model) {
                     return array_search($model->getKey(), $this->internal_value);
                 });
         }
