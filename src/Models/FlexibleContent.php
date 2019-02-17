@@ -44,7 +44,6 @@ class FlexibleContent extends BaseField
         $ret = collect();
 
         foreach ($this->internal_value as $i => $contentBlockType) {
-
             $block = $this->layout_blocks->get($contentBlockType);
 
             if (!$block) {

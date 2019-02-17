@@ -189,7 +189,7 @@ class BaseField extends CorcelPost
      */
     public function scopeActive(Builder $query)
     {
-        return $query->whereHas('fieldGroup', function($q) {
+        return $query->whereHas('fieldGroup', function ($q) {
             $q->active();
         });
     }
