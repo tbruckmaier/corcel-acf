@@ -4,6 +4,7 @@ use Tbruckmaier\Corcelacf\Tests\Models\Post;
 use Tbruckmaier\Corcelacf\Tests\TestCase;
 use Tbruckmaier\Corcelacf\Acf;
 use Tbruckmaier\Corcelacf\AcfRelation;
+use Tbruckmaier\Corcelacf\Models\BaseFieldGroup;
 use Tbruckmaier\Corcelacf\Models\Text;
 use Tbruckmaier\Corcelacf\Models\DateTime;
 use Corcel\Model\Meta\PostMeta;
@@ -96,5 +97,27 @@ class CorcelIntegrationTest extends TestCase
 
         $this->assertEquals('Lorem 1', $posts->get(0)->acf->fake_text);
         $this->assertEquals('Lorem 2', $posts->get(1)->acf->fake_text);
+    }
+
+    public function testDeletedAcfGroup()
+    {
+        // create two acf fields with the same post_name ('field_asfsdf'). One
+        // belongs to a deleted acf group, this must not be returned
+
+        Post::addAcfRelations(['fake_field']);
+
+        // deleted acf group, this field should not get returned
+        $group1 = factory(BaseFieldGroup::class)->create(['post_status' => 'trash']);
+        $text1 = factory(Text::class)->create(['post_parent' => $group1->ID]);
+        $fieldKey = $text1->post_name;
+
+        // published acf group, this is the field we want
+        $group2 = factory(BaseFieldGroup::class)->create();
+        $text2 = factory(DateTime::class)->states('date_picker')->create(['post_parent' => $group2->ID, 'post_name' => $fieldKey]);
+
+        $post = factory(Post::class)->create();
+        $this->addAcfMetaField($post, 'fake_field', '20161013', $fieldKey);
+
+        $this->assertInstanceOf(DateTime::class, $post->acf->fake_field());
     }
 }

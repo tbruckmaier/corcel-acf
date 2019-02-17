@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Str;
-use Corcel\Acf\Models\AcfFieldGroup;
-use Corcel\Model\User;
+use Tbruckmaier\Corcelacf\Models\BaseFieldGroup;
+use Tbruckmaier\Corcelacf\Model\User;
 
-$factory->define(AcfFieldGroup::class, function (Faker\Generator $faker) {
+$factory->define(BaseFieldGroup::class, function (Faker\Generator $faker) {
     return [
-        'post_author' => factory(User::class)->create()->ID,
+        'post_author' => $faker->randomDigit,
         'post_date' => $faker->dateTimeThisYear,
         'post_date_gmt' => $faker->dateTimeThisYear,
         'post_content' => 'a:7:{s:8:"location";a:1:{i:0;a:1:{i:0;a:3:{s:5:"param";s:12:"options_page";s:8:"operator";s:2:"==";s:5:"value";s:29:"acf-options-seiten-optionen22";}}}s:8:"position";s:6:"normal";s:5:"style";s:7:"default";s:15:"label_placement";s:3:"top";s:21:"instruction_placement";s:5:"label";s:14:"hide_on_screen";s:0:"";s:11:"description";s:0:"";}',

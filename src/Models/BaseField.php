@@ -4,6 +4,7 @@ namespace Tbruckmaier\Corcelacf\Models;
 
 use Corcel\Model\Post as CorcelPost;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * This class should actually be abstract (e.g. not instantiated), but some
@@ -173,5 +174,23 @@ class BaseField extends CorcelPost
     {
         $this->localKey = $localKey;
         return $this;
+    }
+
+    /**
+     * The related field group
+     */
+    public function fieldGroup()
+    {
+        return $this->belongsTo(BaseFieldGroup::class, 'post_parent');
+    }
+
+    /**
+     * Filter by active field groups
+     */
+    public function scopeActive(Builder $query)
+    {
+        return $query->whereHas('fieldGroup', function($q) {
+            $q->active();
+        });
     }
 }

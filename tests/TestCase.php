@@ -6,7 +6,6 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Corcel\Model\Post;
 use Corcel\Model\Meta\PostMeta;
 use Tbruckmaier\Corcelacf\Models\BaseField;
-use Tbruckmaier\Corcelacf\Models\BaseFieldGroup;
 use Corcel\Model\Option;
 
 class TestCase extends OrchestraTestCase

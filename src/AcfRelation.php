@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Collection;
 
 class AcfRelation extends HasOne
 {
+    /**
+     * Whenever getting acf fields, make sure they belong to a not-deleted acf
+     * group
+     */
+    public function addConstraints()
+    {
+        parent::addConstraints();
+        $this->query->active();
+    }
+
     public function getResults()
     {
         return $this->getCorrectAcfField($this->query->first());
