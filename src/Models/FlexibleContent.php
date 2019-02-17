@@ -44,9 +44,18 @@ class FlexibleContent extends BaseField
         $ret = collect();
 
         foreach ($this->internal_value as $i => $contentBlockType) {
-            $block = $this->layout_blocks->get($contentBlockType)->keyBy('post_excerpt');
 
-            $block = $block->map(function ($field) use ($i) {
+            $block = $this->layout_blocks->get($contentBlockType);
+
+            if (!$block) {
+                // if the block can not be found in the flexible content field's
+                // config, the fc has probably changed and the post has still
+                // old data inside. In any case we have to ignore it, since we
+                // do not know how to process it
+                continue;
+            }
+
+            $block = $block->keyBy('post_excerpt')->map(function ($field) use ($i) {
                 $internalName = sprintf('%s_%d_%s', $this->localKey, $i, $field->post_excerpt);
                 return (clone $field)->setData($this->data)->setLocalKey($internalName);
             });
