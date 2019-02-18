@@ -10,7 +10,7 @@ class Group extends Generic
 
     public function getValueAttribute()
     {
-        return new GroupLayout($this->children->keyBy('post_excerpt')->map(function($field) {
+        return new GroupLayout($this->children->keyBy('post_excerpt')->map(function ($field) {
             $internalName = sprintf('%s_%s', $this->localKey, $field->post_excerpt);
             return $field->setData($this->data)->setLocalKey($internalName);
         }));
