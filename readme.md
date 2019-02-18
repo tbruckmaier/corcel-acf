@@ -186,6 +186,7 @@ The following field types are supported (everything else just returns a `Generic
 | Date Time Picker  | DateTime        | `Carbon\Carbon`                               |                     |
 | Time Picker       | DateTime        | `Carbon\Carbon`                               |                     |
 | Color Picker      | Text            | `string`                                      |                     |
+| Group             | Group           | `GroupLayout`                                 |                     |
 | Repeater          | Repeater        | `Collection` of `RepeaterLayout`              |                     |
 | Flexible Content  | FlexibleContent | `Collection` of `FlexibleContentLayout`       |                     |
 | (everything else) | Generic         | string                                        |                     |
@@ -208,7 +209,7 @@ use Tbruckmaier\Corcelacf\Models\Text;
 use Tbruckmaier\Corcelacf\Models\Repeater;
 use Tbruckmaier\Corcelacf\Models\FlexibleContent;
 use Tbruckmaier\Corcelacf\Support\RepeaterLayout;
-use Tbruckmaier\Corcelacf\Support\FlexibleContent;
+use Tbruckmaier\Corcelacf\Support\FlexibleContentLayout;
 
 $post = Post::find(1);
 
@@ -234,6 +235,26 @@ $fcLayouts->get(1)->accordion_items(); // Repeater::class
 $fcLayouts->get(1)->accordion_items; // Collection of RepeaterLayouts
 $fcLayouts->get(1)->accordion_items->first()->title; // "First accordion element"
 $fcLayouts->get(1)->accordion_items->first()->content; // "First accordion content..."
+```
+
+### Group field
+
+A group field returns a `GroupLayout`, which contains all grouped fields. `GroupLayout` acts like a `FlexibleContentLayout` or a `RepeaterLayout`: by accessing its fields as attributes, the parsed value is returned. When accessing them as methods, the class itself is returned.
+
+```php
+use Corcel\Models\Post;
+use Tbruckmaier\Corcelacf\Models\Group;
+use Tbruckmaier\Corcelacf\Models\Text;
+use Tbruckmaier\Corcelacf\Models\Repeater;
+use Tbruckmaier\Corcelacf\Support\GroupLayout;
+
+$post = Post::find(1);
+
+$post->acf->header_fields(); // Group
+$post->acf->header_fields; // GroupLayout
+
+$post->acf->header_fields->title; // "site title"
+$post->acf->header_fields->title(); // Text::class
 ```
 
 ## Custom field types

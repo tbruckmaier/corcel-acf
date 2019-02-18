@@ -92,6 +92,8 @@ class BaseField extends CorcelPost
             case 'date_time_picker':
             case 'time_picker':
                 return DateTime::class;
+            case 'group':
+                return Group::class;
             case 'repeater':
                 return Repeater::class;
             case 'flexible_content':
@@ -192,5 +194,14 @@ class BaseField extends CorcelPost
         return $query->whereHas('fieldGroup', function ($q) {
             $q->active();
         });
+    }
+
+    /**
+     * Overwrite the original corcel relation so the class mapping works.
+     * FIXME use this relation in all subfields
+     */
+    public function children()
+    {
+        return $this->hasMany(BaseField::class, 'post_parent');
     }
 }
