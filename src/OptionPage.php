@@ -1,78 +1,76 @@
 <?php
 
-namespace Corcel\Acf;
+namespace Tbruckmaier\Corcelacf;
 
-use Corcel\Acf\Exception\MissingFieldNameException;
-use Corcel\Model;
-use Corcel\Model\Post;
 use Corcel\Model\Option;
-use Corcel\Acf\Models\AcfFieldGroup;
+use Tbruckmaier\Corcelacf\Models\BaseFieldGroup;
 
-class OptionPage extends Model
+class OptionPage extends BaseFieldGroup
 {
     /**
-     * @var string
+     * The plain values from the db, [meta_key => meta_value]
      */
-    public $prefix;
+    protected $plain;
 
     /**
-     * @var AcfFieldGroup
+     * The acf fields, keyed by option name
      */
-    public $page;
+    protected $options;
 
     /**
-     * @var Collection
+     * Load the option data from the database & instantiate all needed BaseField
+     * instances
      */
-    public $options;
-
-    /**
-     * TODO would be nice if only one of the arguments would be needed, but i
-     * dont see any connection between the page object in wp_posts and the
-     * prefix used in wp_options
-     *
-     * @param string $groupName acf field group name
-     * @param string $prefix prefix in wp_options
-     */
-    public function __construct($groupName, $prefix = 'options_')
+    public function loadOptions(string $prefix = 'options')
     {
-        parent::__construct();
-        $this->prefix = $prefix;
-        $this->page = AcfFieldGroup::where('post_title', $groupName)->first();
+        // load all plain values from the database, which match the prefix
+        $this->plain = Option
+            ::where('option_name', 'like', $prefix . '_%')
+            ->orWhere('option_name', 'like', '_' . $prefix . '_%')
 
-        if (!$this->page) {
-            trigger_error('Could not instantiate option page called ' . $groupName);
-        }
+            // key them by option_name
+            ->pluck('option_value', 'option_name')
 
-        $this->loadOptions();
+            // remove the prefix from the option_name
+            ->keyBy(function($field, $key) use ($prefix) {
+                return substr($key, strlen($prefix) + 1);
+            });
+
+        $this->options = $this->fields
+
+            // key the fields by the option name (prefixed)
+            ->keyBy(function($field) {
+                return substr($this->plain->search($field->post_name), 1);
+            })
+            // all "invalid" fields end up with the index 0, remove them (fields
+            // like "tab" for instance)
+            ->forget(0)
+
+            // pass all options data to the fields and set their local key
+            ->each(function($field, $key) {
+                $field->setLocalKey($key)->setData($this->plain);
+            });
+
+        return $this;
     }
 
-    /**
-     * Load all options for this page into $this->options to save queries
-     */
-    public function loadOptions()
+    public function getOptionField($key)
     {
-        $builder = Option::where('option_name', 'like', $this->prefix . '%')->orWhere('option_name', 'like', '_' . $this->prefix . '%');
-        $this->options = $builder->get()->keyBy('option_name');
-    }
-
-    /**
-     * Make possible to call $optionPage->fieldType('fieldName').
-     *
-     * @param string$name
-     * @param array $arguments
-     *
-     * @return mixed
-     *
-     * @throws MissingFieldNameException
-     */
-    public function __call($name, $arguments)
-    {
-        if (!isset($arguments[0])) {
-            throw new MissingFieldNameException('The field name is missing');
+        if (empty($this->options)) {
+            return null;
         }
 
-        $field = FieldFactory::makeOptionField($arguments[0], $this, snake_case($name));
+        return $this->options->get($key);
+    }
 
-        return $field ? $field->get() : null;
+    public function getOption($key)
+    {
+        $field = $this->getOptionField($key);
+        return ($field ? $field->value : null);
+    }
+
+    public function scopeByTitle($query, $title)
+    {
+        return $query->where('post_title', $title);
     }
 }

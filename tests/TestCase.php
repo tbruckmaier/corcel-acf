@@ -6,6 +6,7 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Corcel\Model\Post;
 use Corcel\Model\Meta\PostMeta;
 use Tbruckmaier\Corcelacf\Models\BaseField;
+use Tbruckmaier\Corcelacf\Models\BaseFieldGroup;
 use Corcel\Model\Option;
 
 class TestCase extends OrchestraTestCase
@@ -92,32 +93,6 @@ class TestCase extends OrchestraTestCase
         ]);
 
         $override['post_name'] = $internal;
-
-        $BaseField = factory(BaseField::class)->states($states)->create($override);
-        return $BaseField;
-    }
-
-    /**
-     * Create an acf field for use in an option page
-     */
-    protected function createOptionAcfField(BaseFieldGroup $fieldGroup, $prefix, $fieldName, $value, $states = [], $override = [], $internal = null)
-    {
-        if (!$internal) {
-            $internal = 'field_' . str_random(13);
-        }
-
-        factory(Option::class)->create([
-            'option_name' => $prefix . $fieldName,
-            'option_value' => $value,
-        ]);
-        factory(Option::class)->create([
-            'option_name' => '_' . $prefix . $fieldName,
-            'option_value' => $internal,
-        ]);
-
-        $override['post_name'] = $internal;
-        $override['post_parent'] = $fieldGroup->ID;
-        $override['post_excerpt'] = $fieldName;
 
         $BaseField = factory(BaseField::class)->states($states)->create($override);
         return $BaseField;

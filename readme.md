@@ -39,7 +39,7 @@ Corcel is required for this plugin, but don't worry, if it's missing it will be 
 * support for deeply encapsulated fields (e.g. a image in a repeater in a flexible content)
 * TODO: consider custom post types
 * possible to access acf field config and internal attributes
-* TODO: support for option page
+* full support for option page
 
 # Basic usage
 
@@ -121,6 +121,71 @@ The base `Acf` class uses this data and passes it to all fields (and possibly su
 
 This just adds a `getAcfAttribute()` method, which returns an instance of the base `Tbruckmaier\Corcelacf\Acf` class (this overwrites the corcel-internal default support for the outdated Corcel acf plugin: https://github.com/corcel/acf/tree/. If you would like to use it in parallel, you can define the `getAcfAttribute` method by yourself with a different name)
 
+## Option page
+
+Fields in ACF option pages can be used the same way, though it is a bit more tricky to instantiate the option page. The relevant field configs are stored in `wp_posts` with post_type `acf-field` and are all children of a `acf-field-group` (via `post_parent`). The field values are stored in `wp_options`, with a certain prefix (defaults to `options`).
+
+```
+wp_options
+
+| option_name                            | option_value        |
+|:---------------------------------------|:--------------------|
+| _options_page-title                    | field_5bdae4fb72c4a |
+| options_page-title                     | My page             |
+| _options_page-description              | field_5891ef34058bf |
+| options_page-title                     | My description      |
+| _additional-options-my-repeater        | field_5c3b6543480d6 |
+| additional-options-my-repeater         | 2                   |
+| _additional-options-my-repeater_0_text | field_58737273acc78 |
+| additional-options-my-repeater_0_text  | Entry #1            |
+| _additional-options-my-repeater_1_text | field_58737273acc78 |
+| additional-options-my-repeater_1_text  | Entry #2            |
+```
+
+First of all, we need to find the option page's `acf-field-group`. We can find its id in the url when editing the field group in Wordpress: `/wp-admin/post.php?post=1016&action=edit`. It can also be found by its slug or page title (see below)
+
+The prefix is normally set in `functions.php` and defaults to `options`.
+
+```php
+
+// functions.php:
+
+// no parameters result in the prefix "options"
+acf_add_options_page();
+
+// another option page with a different prefix
+acf_add_options_page([
+    'post_id' => 'additional-options',
+]);
+
+// laravel:
+
+use Tbruckmaier\Corcelacf\OptionPage;
+
+// get the option page's field group by id, take it from the url for instance
+$optionPage = OptionPage::find(1016);
+
+// ... or find it by its title. This is not the title given to acf_add_options_page(), but the field group name.
+$optionPage1 = OptionPage::byTitle('Page option fields')->first();
+
+// load the option data from the database
+$optionPage->loadOptions();
+
+// alternatively with a custom prefix
+$optionPage1->loadOptions('additional-options');
+
+// get a option
+$pageTitle = $optionPage->getOption('page-title'); // "My page"
+
+// or the underlying Field
+$pageTitle = $optionPage->getOptionField('page-title'); // Text::class
+
+// works with all fields:
+$myRepeater = $optionPage1->getOption('my-repeater'); // Collection
+$myRepeater->first()->text; // "Entry #1"
+```
+
+If anyone stumbles upon an easier solution for option pages, I am open for suggestions. Maybe there is a way to get the field group by passing the prefix, or the other way round?
 
 ## Advanced usage
 
