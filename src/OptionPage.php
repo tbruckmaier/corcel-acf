@@ -32,14 +32,14 @@ class OptionPage extends BaseFieldGroup
             ->pluck('option_value', 'option_name')
 
             // remove the prefix from the option_name
-            ->keyBy(function($field, $key) use ($prefix) {
+            ->keyBy(function ($field, $key) use ($prefix) {
                 return substr($key, strlen($prefix) + 1);
             });
 
         $this->options = $this->fields
 
             // key the fields by the option name (prefixed)
-            ->keyBy(function($field) {
+            ->keyBy(function ($field) {
                 return substr($this->plain->search($field->post_name), 1);
             })
             // all "invalid" fields end up with the index 0, remove them (fields
@@ -47,7 +47,7 @@ class OptionPage extends BaseFieldGroup
             ->forget(0)
 
             // pass all options data to the fields and set their local key
-            ->each(function($field, $key) {
+            ->each(function ($field, $key) {
                 $field->setLocalKey($key)->setData($this->plain);
             });
 
