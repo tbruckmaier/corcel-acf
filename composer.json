@@ -28,5 +28,12 @@
       "Tbruckmaier\\Corcelacf\\": "src/",
       "Tbruckmaier\\Corcelacf\\Tests\\": "tests/"
     }
+  },
+  "extra": {
+    "laravel": {
+        "providers": [
+            "Tbruckmaier\\Corcelacf\\ServiceProvider"
+        ]
+    }
   }
 }

@@ -32,12 +32,13 @@ Corcel is required for this plugin, but don't worry, if it's missing it will be 
 
 # Features
 
-* load acf fields via eloquent relations
-* load acf data for a post only once and save sql queries
-* support for eager loading of acf relations
-* return suitable data types for the different acf fields (see table below), including a fallback for unknown field types
-* support for deeply encapsulated fields (e.g. a image in a repeater in a flexible content)
-* TODO: consider custom post types
+* loads ACF fields via eloquent relations
+    - loads acf data for a post only once and save sql queries
+    - supports eager loading of acf relations
+* supports deeply encapsulated fields (e.g. a image in a repeater in a flexible content)
+* return suitable data types for the different acf fields (see table below)
+    - unknown fields return a generic class with access to the raw db values
+    - custom classes can be used for existing & unknown fields
 * possible to access acf field config and internal attributes
 * full support for option page
 
@@ -189,6 +190,42 @@ If anyone stumbles upon an easier solution for option pages, I am open for sugge
 
 ## Advanced usage
 
+### Custom field classes
+
+You can use your own classes for certain field types to extend them with custom attributes & methods. Publish the configuration via `artisan vendor:publish --provider='Tbruckmaier\Corcelacf\ServiceProvider'` and fill in the class names in `config/corcel-acf.php`. You can overwrite existing field types or define new ones:
+
+```php
+
+// config/corcel-acf.php
+    'classMapping' => [
+        'text' => CustomText::class,
+        'google_maps' => GoogleMapsField::class,
+    ]
+
+// CustomText.php
+class CustomText extends \Tbruckmaier\Corcelacf\BaseField
+{
+    public function getValueAttribute()
+    {
+        return htmlentities($this->internal_value);
+    }
+
+    public function getWordsAttribute()
+    {
+        return explode(' ', $this->internal_value);
+    }
+}
+
+// Usage
+$post->acf->my_text_field(); // CustomText::class
+$post->acf->my_text_field; // "one &amp; two"
+$post->acf->my_text_field()->words; // ["one", "&", "two"]
+
+
+```
+
+The custom classes should extend `Tbruckmaier\Corcelacf\BaseField`
+
 ### Defining acf relations
 
 Instead of using the model's `boot()` method to create relationships on the fly, one can also define them manually:
@@ -211,6 +248,8 @@ $post = Post::find(1);
 $post->thumbnail; // Image::class
 $post->thumbnail->value; // Attachment
 ```
+
+Whenever Corcel models are returned (for instance an `Corcel\Model\Attachment` class for an image), the corcel class mapping config is considered (see https://github.com/corcel/corcel#-custom-post-type).
 
 ### Eager loading
 
@@ -321,10 +360,6 @@ $post->acf->header_fields; // GroupLayout
 $post->acf->header_fields->title; // "site title"
 $post->acf->header_fields->title(); // Text::class
 ```
-
-## Custom field types
-
-TODO: it should be possible to have a config to use own field types. Currently just corcel models can be configured (https://github.com/corcel/corcel#-custom-post-type)
 
 # Running Tests
 

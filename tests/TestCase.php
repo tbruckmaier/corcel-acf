@@ -8,6 +8,7 @@ use Corcel\Model\Meta\PostMeta;
 use Tbruckmaier\Corcelacf\Models\BaseField;
 use Tbruckmaier\Corcelacf\Models\BaseFieldGroup;
 use Corcel\Model\Option;
+use Tbruckmaier\Corcelacf\ServiceProvider;
 
 class TestCase extends OrchestraTestCase
 {
@@ -32,6 +33,11 @@ class TestCase extends OrchestraTestCase
 
         $this->withFactories(base_path() . '/' .$this->pathPrefix.'/tests/database/factories');
         $this->withFactories(__DIR__ . '/database/factories');
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return [ServiceProvider::class];
     }
 
     /**

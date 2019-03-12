@@ -43,66 +43,11 @@ class BaseField extends CorcelPost
      *
      * @param string $type Acf field type
      *
-     * @return string|null class name
+     * @return string class name
      */
     protected function mapTypeToClass(string $type)
     {
-        // TODO make mapping configurable
-        switch ($type) {
-            case 'text':
-            case 'textarea':
-            case 'number':
-            case 'email':
-            case 'url':
-            case 'password':
-            case 'wysiwyg':
-            case 'editor':
-            case 'oembed':
-            case 'embed':
-            case 'color_picker':
-                return Text::class;
-            case 'select':
-            case 'checkbox':
-            case 'radio':
-                return Choice::class;
-            case 'link':
-                return Link::class;
-            case 'image':
-            case 'img':
-                return Image::class;
-            case 'file':
-                return File::class;
-            case 'gallery':
-                return Generic::class; // TODO
-            case 'true_false':
-            case 'boolean':
-                return Boolean::class;
-            case 'post_object':
-            case 'post':
-            case 'relationship':
-                return Post::class;
-            case 'page_link':
-                return PageLink::class;
-            case 'taxonomy':
-            case 'term':
-                return Term::class;
-            case 'user':
-                return Generic::class; // TODO
-            case 'date_picker':
-            case 'date_time_picker':
-            case 'time_picker':
-                return DateTime::class;
-            case 'group':
-                return Group::class;
-            case 'repeater':
-                return Repeater::class;
-            case 'flexible_content':
-                return FlexibleContent::class;
-            case 'clone':
-                return Generic::class; // TODO
-        }
-
-        return null;
+        return config('corcel-acf.classMapping.' . $type, Generic::class);
     }
 
     /**
@@ -117,11 +62,12 @@ class BaseField extends CorcelPost
 
         $className = $this->mapTypeToClass($type);
 
-        if (class_exists($className)) {
-            return new $className();
-        }
+        return new $className();
+    }
 
-        return new Generic();
+    public function getDataAttribute()
+    {
+        return $this->data;
     }
 
     /**
