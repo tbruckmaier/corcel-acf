@@ -16,23 +16,9 @@ class FieldFlexibleContentTest extends TestCase
     {
         $acfField = factory(FlexibleContent::class)->create();
 
-        factory(BaseField::class)->create([
-            'post_parent' => $acfField->ID,
-            'post_content' => 'a:11:{s:4:"type";s:4:"text";s:12:"instructions";s:0:"";s:8:"required";i:0;s:17:"conditional_logic";i:0;s:7:"wrapper";a:3:{s:5:"width";s:0:"";s:5:"class";s:0:"";s:2:"id";s:0:"";}s:13:"parent_layout";s:13:"589c18bcf10da";s:13:"default_value";s:0:"";s:11:"placeholder";s:0:"";s:7:"prepend";s:0:"";s:6:"append";s:0:"";s:9:"maxlength";s:0:"";}',
-            'post_excerpt' => 'text',
-        ]);
-
-        factory(BaseField::class)->create([
-            'post_parent' => $acfField->ID,
-            'post_content' => 'a:12:{s:4:"type";s:11:"post_object";s:12:"instructions";s:0:"";s:8:"required";i:0;s:17:"conditional_logic";i:0;s:7:"wrapper";a:3:{s:5:"width";s:0:"";s:5:"class";s:0:"";s:2:"id";s:0:"";}s:13:"parent_layout";s:13:"589c18dfc9b28";s:9:"post_type";a:0:{}s:8:"taxonomy";a:0:{}s:10:"allow_null";i:0;s:8:"multiple";i:0;s:13:"return_format";s:6:"object";s:2:"ui";i:1;}',
-            'post_excerpt' => 'post',
-        ]);
-
-        factory(BaseField::class)->create([
-            'post_parent' => $acfField->ID,
-            'post_content' => 'a:12:{s:4:"type";s:11:"post_object";s:12:"instructions";s:0:"";s:8:"required";i:0;s:17:"conditional_logic";i:0;s:7:"wrapper";a:3:{s:5:"width";s:0:"";s:5:"class";s:0:"";s:2:"id";s:0:"";}s:13:"parent_layout";s:13:"589c1ee35ec27";s:9:"post_type";a:0:{}s:8:"taxonomy";a:0:{}s:10:"allow_null";i:0;s:8:"multiple";i:1;s:13:"return_format";s:6:"object";s:2:"ui";i:1;}',
-            'post_excerpt' => 'post',
-        ]);
+        factory(BaseField::class)->states('fc_text')->create(['post_parent' => $acfField->ID]);
+        factory(BaseField::class)->states('fc_post')->create(['post_parent' => $acfField->ID]);
+        factory(BaseField::class)->states('fc_post_multiple')->create(['post_parent' => $acfField->ID]);
 
         return $acfField;
     }
