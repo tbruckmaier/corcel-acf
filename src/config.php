@@ -14,6 +14,7 @@ use Tbruckmaier\Corcelacf\Models\Group;
 use Tbruckmaier\Corcelacf\Models\Repeater;
 use Tbruckmaier\Corcelacf\Models\FlexibleContent;
 use Tbruckmaier\Corcelacf\Models\Generic;
+use Tbruckmaier\Corcelacf\Models\Gallery;
 
 return [
     'classMapping' => [
@@ -35,7 +36,7 @@ return [
         'image' => Image::class,
         'img' => Image::class,
         'file' => File::class,
-        'gallery' => Generic::class, // TODO
+        'gallery' => Gallery::class,
         'true_false' => Boolean::class,
         'boolean' => Boolean::class,
         'post_object' => Post::class,
