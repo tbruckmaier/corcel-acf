@@ -14,11 +14,16 @@ class FieldGalleryTest extends TestCase
             $image->meta()->save(factory(PostMeta::class)->states('attachment_metadata')->create());
         });
 
+        $ids = $galleryImages->pluck('ID')->shuffle()->all();
+
         $acfField = factory(Gallery::class)->create();
-        $this->addData($acfField, 'fake_gallery', serialize($galleryImages->pluck('ID')->all()));
+        $this->addData($acfField, 'fake_gallery', serialize($ids));
 
         $this->assertInstanceOf(Collection::class, $acfField->value);
         $this->assertEquals(7, $acfField->value->count());
+
+        // make sure they are sorted correctly
+        $this->assertEquals($ids, $acfField->value->pluck('ID')->all());
 
         $attachment = $acfField->value->get(3);
 

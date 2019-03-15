@@ -39,14 +39,7 @@ class Post extends BaseField
         if ($this->is_serialized) {
             // it would be nice if we could implement this as a hasMany()
             // relation, but laravel does not support whereIn() in relationships
-            
-            // find all posts with the given ids and sort them in the right
-            // order, see https://stackoverflow.com/questions/40731863/sort-
-            // collection-by-custom-order-in-eloquent
-            return (new CorcelPost)->whereIn('ID', $this->internal_value)->get()
-                ->sortBy(function ($model) {
-                    return array_search($model->getKey(), $this->internal_value);
-                });
+            return $this->getSortedRelation(CorcelPost::class, $this->internal_value);
         }
 
         return $this->relationSingle;

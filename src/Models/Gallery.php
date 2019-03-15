@@ -10,7 +10,6 @@ class Gallery extends Generic
 
     public function getValueAttribute()
     {
-        // FIXME add sorting
-        return Attachment::whereIn('ID', $this->internal_value)->get();
+        return $this->getSortedRelation(Attachment::class, $this->internal_value);
     }
 }
