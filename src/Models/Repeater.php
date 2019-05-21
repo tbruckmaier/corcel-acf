@@ -24,7 +24,7 @@ class Repeater extends BaseField
             $row = collect();
 
             foreach ($layouts as $layout) {
-                $field = $layout->replicate();
+                $field = clone $layout; // not replicate(), as it strips the ID field and we need it for nested repeaters
                 $internalName = sprintf('%s_%d_%s', $this->localKey, $i, $layout->post_excerpt);
 
                 $field->setData($this->data)->setLocalKey($internalName);
