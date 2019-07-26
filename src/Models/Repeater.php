@@ -16,14 +16,13 @@ class Repeater extends BaseField
     public function getValueAttribute()
     {
         $count = $this->internal_value;
-        $layouts = $this->layouts->keyBy('type');
 
         $ret = collect();
 
         for ($i = 0; $i < $count; $i++) {
             $row = collect();
 
-            foreach ($layouts as $layout) {
+            foreach ($this->layouts as $layout) {
                 $field = clone $layout; // not replicate(), as it strips the ID field and we need it for nested repeaters
                 $internalName = sprintf('%s_%d_%s', $this->localKey, $i, $layout->post_excerpt);
 
