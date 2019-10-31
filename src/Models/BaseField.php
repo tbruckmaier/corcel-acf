@@ -144,7 +144,6 @@ class BaseField extends CorcelPost
 
     /**
      * Overwrite the original corcel relation so the class mapping works.
-     * FIXME use this relation in all subfields
      */
     public function children()
     {

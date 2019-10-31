@@ -6,12 +6,7 @@ use Tbruckmaier\Corcelacf\Support\RepeaterLayout;
 
 class Repeater extends BaseField
 {
-    protected $with = ['layouts'];
-
-    public function layouts()
-    {
-        return $this->hasMany(BaseField::class, 'post_parent');
-    }
+    protected $with = ['children'];
 
     public function getValueAttribute()
     {
@@ -22,7 +17,7 @@ class Repeater extends BaseField
         for ($i = 0; $i < $count; $i++) {
             $row = collect();
 
-            foreach ($this->layouts as $layout) {
+            foreach ($this->children as $layout) {
                 $field = clone $layout; // not replicate(), as it strips the ID field and we need it for nested repeaters
                 $internalName = sprintf('%s_%d_%s', $this->localKey, $i, $layout->post_excerpt);
 

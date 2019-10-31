@@ -8,16 +8,11 @@ class FlexibleContent extends BaseField
 {
     use Traits\SerializedSometimes;
 
-    protected $with = ['layouts'];
+    protected $with = ['children'];
 
     public function getIsSerializedAttribute()
     {
         return true;
-    }
-
-    public function layouts()
-    {
-        return $this->hasMany(BaseField::class, 'post_parent');
     }
 
     public function getLayoutBlocksAttribute()
@@ -26,7 +21,7 @@ class FlexibleContent extends BaseField
         $availableLayouts = collect(array_get($this->config, 'layouts'))->pluck('name', 'key');
 
         // the fields in the layout blocks are all children of the root fc field
-        $layouts = $this->layouts
+        $layouts = $this->children
             // They are associated with a layout block via parent_layout
             // ("5898b06bd55ed"). So lets group them by their layout block
             ->groupBy('config.parent_layout')
