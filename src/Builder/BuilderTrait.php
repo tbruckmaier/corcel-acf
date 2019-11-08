@@ -1,24 +1,11 @@
 <?php
 
-namespace Tbruckmaier\Corcelacf;
+namespace Tbruckmaier\Corcelacf\Builder;
 
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use Corcel\Model\Builder\PostBuilder as CorcelBuilder;
+use Tbruckmaier\Corcelacf\Models\BaseField;
 
-class CorcelAcfBuilder extends CorcelBuilder
+trait BuilderTrait
 {
-    protected $fieldConfig;
-
-    /**
-     * Sets the config / attributes of this field directly (is called when the
-     * field is defined in php)
-     */
-    public function setFieldConfig($fieldConfig)
-    {
-        $this->fieldConfig = $fieldConfig;
-        return $this;
-    }
-
     /**
      * Method to make an field instance from an attributes array (for acf fields
      * defined in php). Returns the proper instance depending on the field type.
@@ -28,10 +15,14 @@ class CorcelAcfBuilder extends CorcelBuilder
     protected function makeBaseField(array $attributes = [])
     {
         // create a proper instance with these attributes. We set only the
-        // interesting attributes, but could theoretically add more
-        $field = (new Models\BaseField())->newFromBuilder([
+        // interesting attributes, but could theoretically add more.
+        $field = (new BaseField())->newFromBuilder([
+            // TODO we serialize the array here to mimic the database, but
+            // BaseField calls unserialize() anyway. Can we somehow spare these
+            // function calls?
             'post_content' => serialize($attributes),
             'post_excerpt' => $attributes['name'],
+            'post_name' => $attributes['key'],
         ]);
 
         // now check if we have sub_fields/layouts, and populate the main fields
@@ -75,26 +66,5 @@ class CorcelAcfBuilder extends CorcelBuilder
         }
 
         return $field;
-    }
-
-    /**
-     * This method is called whenever the query is "fired", e.g. when an
-     * instance of a field shall be retrieved
-     */
-    public function get($columns = ['*'])
-    {
-        // if the attributes of this field have been manually set (acf fields
-        // defined in php), we directly return an instance of this field with
-        // the attributes set (no need to check the database)
-        if ($this->fieldConfig) {
-
-            $field = $this->makeBaseField($this->fieldConfig);
-
-            return \collect([$field]);
-        }
-
-        // otherwise we use the regular get() method (which fires a select query
-        // to the database)
-        return parent::get($columns);
     }
 }

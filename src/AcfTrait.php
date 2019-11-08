@@ -93,7 +93,7 @@ trait AcfTrait
         $instance = $this->newRelatedInstance(Models\BaseField::class);
 
         // this calls BaseField::newEloquentBuilder() and therefore returns an
-        // instance of CorcelAcfBuilder
+        // instance of FieldBuilder
         $query = $instance->newQuery();
 
         // if we have a custom field config, set it (happens if acf fields are

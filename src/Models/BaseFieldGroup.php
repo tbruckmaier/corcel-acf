@@ -4,6 +4,7 @@ namespace Tbruckmaier\Corcelacf\Models;
 
 use Corcel\Model\Post;
 use Illuminate\Database\Eloquent\Builder;
+use Tbruckmaier\Corcelacf\Builder\FieldGroupBuilder;
 
 class BaseFieldGroup extends Post
 {
@@ -25,5 +26,14 @@ class BaseFieldGroup extends Post
     public function scopeActive(Builder $query)
     {
         return $query->whereIn('post_status', ['publish', 'acf-disabled']);
+    }
+
+    /**
+     * @param \Illuminate\Database\Query\Builder $query
+     * @return FieldGroupBuilder
+     */
+    public function newEloquentBuilder($query)
+    {
+        return new FieldGroupBuilder($query);
     }
 }
