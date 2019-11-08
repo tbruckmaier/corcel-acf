@@ -5,6 +5,7 @@ namespace Tbruckmaier\Corcelacf\Models;
 use Corcel\Model\Post as CorcelPost;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
+use Tbruckmaier\Corcelacf\CorcelAcfBuilder;
 
 /**
  * This class should actually be abstract (e.g. not instantiated), but some
@@ -163,5 +164,15 @@ class BaseField extends CorcelPost
             ->sortBy(function ($model) use ($ids) {
                 return array_search($model->getKey(), $ids);
             });
+    }
+
+    /**
+     * @see Tbruckmaier\Corcelacf\AcfTrait::hasAcf()
+     * @param \Illuminate\Database\Query\Builder $query
+     * @return CorcelAcfBuilder
+     */
+    public function newEloquentBuilder($query)
+    {
+        return new CorcelAcfBuilder($query);
     }
 }

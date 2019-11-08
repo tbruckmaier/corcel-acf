@@ -18,16 +18,38 @@ trait AcfTrait
 
     protected static $acfRelations = [];
 
-    /**
-     * Called upon booting the model. Register all acf relations
-     */
-    public static function bootAcfTrait()
+    protected static function bootTraits()
     {
-        foreach (self::getAcfRelations() as $relationName) {
-            $methodName = 'acf_' . $relationName;
+        parent::bootTraits();
+        self::createAcfRelations();
+    }
 
-            self::addExternalMethod($methodName, function () use ($relationName) {
-                return $this->hasAcf($relationName);
+    /**
+     * Called upon booting the model. Check all registered acf relation names
+     * and create the actual relation method
+     */
+    public static function createAcfRelations()
+    {
+        $methods = [];
+
+        foreach (self::getAcfRelations() as $relationData) {
+
+            // the relation is either a plain string with the acf field name, in
+            // that case we get the field configuration from the database (for
+            // use with acf-json). Or the acf field name is the array key, and
+            // the value is the config array
+            if (is_array($relationData)) {
+                $relationName = array_get($relationData, 'name');
+                $config = $relationData;
+            } else {
+                $relationName = $relationData;
+                $config = null;
+            }
+
+            // create a acf relation dynamically
+            $methodName = 'acf_' . $relationName;
+            self::addExternalMethod($methodName, function () use ($relationName, $config) {
+                return $this->hasAcf($relationName, $config);
             });
         }
     }
@@ -63,20 +85,29 @@ trait AcfTrait
     }
 
     /**
-     * Create an instance of the acf relation. Copied from
+     * Create an instance of the acf relation. Originally adapted from
      * Illuminate\Database\Eloquent\Concerns\HasRelationships::hasOne
      */
-    public function hasAcf($localKey)
+    public function hasAcf($localKey, $config = null)
     {
-        $className = Models\BaseField::class;
+        $instance = $this->newRelatedInstance(Models\BaseField::class);
 
-        $instance = $this->newRelatedInstance($className);
+        // this calls BaseField::newEloquentBuilder() and therefore returns an
+        // instance of CorcelAcfBuilder
+        $query = $instance->newQuery();
+
+        // if we have a custom field config, set it (happens if acf fields are
+        // defined in php). If the config is not set, the field itself will
+        // retrieve it from the database later
+        if ($config) {
+            $query->setFieldConfig($config);
+        }
 
         $foreignKey = 'post_name';
 
         $underscore = '_' . $localKey;
 
-        return $this->newHasOneAcf($instance->newQuery(), $this, $instance->getTable().'.'.$foreignKey, $underscore);
+        return $this->newHasOneAcf($query, $this, $instance->getTable().'.'.$foreignKey, $underscore);
     }
 
     /**
