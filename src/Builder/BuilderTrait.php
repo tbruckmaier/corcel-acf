@@ -23,6 +23,7 @@ trait BuilderTrait
             'post_content' => serialize($attributes),
             'post_excerpt' => $attributes['name'],
             'post_name' => $attributes['key'],
+            'post_status' => 'publish',
         ]);
 
         // now check if we have sub_fields/layouts, and populate the main fields
