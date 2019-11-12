@@ -24,20 +24,29 @@ class OptionGroupBuilder extends FieldGroupBuilder
      */
     public function get($columns = ['*'])
     {
-        $instances = parent::get($columns);
-        
+        // if the attributes of this option group have been manually set (acf
+        // fields defined in php), we directly return an instance of this field
+        // with the children set (no need to check the database)
         if ($this->fieldConfigs) {
-            $instances->each(function($instance) {
-                $instance->setRelation(
-                    'fields',
-                    collect($this->fieldConfigs)->map(function ($x) {
-                        return $this->makeBaseField($x);
-                    })
-                );
-            });
 
+            // turn the field array into (sub)instances of BaseField
+            $childFields = collect($this->fieldConfigs)
+                ->map(function ($fieldConfig) {
+                    return $this->makeBaseField($fieldConfig);
+                });
+
+            // create the OptionGroup and set its children relation
+            $optionGroup = $this->getModel()->newFromBuilder();
+            $optionGroup->setRelation(
+                'children',
+                $childFields
+            );
+
+            return \collect([$optionGroup]);
         }
 
-        return $instances;
+        // if the fields are not defined in php,  we use the regular get()
+        // method (which fires a select query to the database)
+        return parent::get($columns);
     }
 }
