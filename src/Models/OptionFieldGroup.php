@@ -63,7 +63,7 @@ class OptionFieldGroup extends BaseFieldGroup
             });
 
         // convert the plain values into BaseField instances
-        $this->options = $this->fields
+        $this->options = $this->children
 
             // key the fields by the option name (prefixed)
             ->keyBy(function ($field) {

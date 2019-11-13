@@ -13,7 +13,7 @@ class BaseFieldGroup extends Post
      */
     protected $postType = 'acf-field-group';
 
-    public function fields()
+    public function children()
     {
         return $this->hasMany(BaseField::class, 'post_parent', 'ID');
     }
