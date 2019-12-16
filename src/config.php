@@ -15,6 +15,7 @@ use Tbruckmaier\Corcelacf\Models\Repeater;
 use Tbruckmaier\Corcelacf\Models\FlexibleContent;
 use Tbruckmaier\Corcelacf\Models\Generic;
 use Tbruckmaier\Corcelacf\Models\Gallery;
+use Tbruckmaier\Corcelacf\Models\User;
 
 return [
     'classMapping' => [
@@ -45,7 +46,7 @@ return [
         'page_link' => PageLink::class,
         'taxonomy' => Term::class,
         'term' => Term::class,
-        'user' => Generic::class, // TODO
+        'user' => User::class,
         'date_picker' => DateTime::class,
         'date_time_picker' => DateTime::class,
         'time_picker' => DateTime::class,

@@ -263,37 +263,37 @@ $posts = Post::all()->load('acf_thumbnail');
 
 The following field types are supported (everything else just returns a `Generic` field):
 
-| Field             | Internal class  | Parsed response                               | __toString()        |
-|:------------------|:----------------|:----------------------------------------------|:--------------------|
-| Text              | Text            | `string`                                      |                     |
-| Textarea          | Text            | `string`                                      |                     |
-| Number            | Text            | `string`                                      |                     |
-| E-mail            | Text            | `string`                                      |                     |
-| URL               | Text            | `string`                                      |                     |
-| Password          | Text            | `string`                                      |                     |
-| WYSIWYG (Editor)  | Text            | `string`                                      |                     |
-| oEmbed            | Text            | `string`                                      |                     |
-| Image             | Image           | `Corcel\Model\Attachment`                     |                     |
-| File              | File            | `Corcel\Model\Attachment`                     |                     |
-| Gallery           | Gallery         | `Collection` of `Corcel\Model\Attachment`     |                     |
-| Select            | Choice          | `string` or `array`                           |                     |
-| Checkbox          | Choice          | `string` or `array`                           |                     |
-| Radio             | Choice          | `string`                                      |                     |
-| True/False        | Boolean         | `boolean`                                     |                     |
-| Post Object       | Post            | `Corcel\Model\Post` or `Collection` of `Post` |                     |
-| Relationship      | Post            | `Corcel\Model\Post` or `Collection` of `Post` |                     |
-| Page Link         | PageLink        | `string`                                      |                     |
-| Link              | Link            | `array` or `string`                           | HTML <a> tag or url |
-| Taxonomy          | Term            | `Corcel\Term` or `Collection` of `Term`       |                     |
-| User              | Generic TODO    | `Corcel\User`                                 |                     |
-| Date Picker       | DateTime        | `Carbon\Carbon`                               |                     |
-| Date Time Picker  | DateTime        | `Carbon\Carbon`                               |                     |
-| Time Picker       | DateTime        | `Carbon\Carbon`                               |                     |
-| Color Picker      | Text            | `string`                                      |                     |
-| Group             | Group           | `GroupLayout`                                 |                     |
-| Repeater          | Repeater        | `Collection` of `RepeaterLayout`              |                     |
-| Flexible Content  | FlexibleContent | `Collection` of `FlexibleContentLayout`       |                     |
-| (everything else) | Generic         | string                                        |                     |
+| Field               | Internal class    | Parsed response                                 | __toString()          |
+| :------------------ | :---------------- | :---------------------------------------------- | :-------------------- |
+| Text                | Text              | `string`                                        |                       |
+| Textarea            | Text              | `string`                                        |                       |
+| Number              | Text              | `string`                                        |                       |
+| E-mail              | Text              | `string`                                        |                       |
+| URL                 | Text              | `string`                                        |                       |
+| Password            | Text              | `string`                                        |                       |
+| WYSIWYG (Editor)    | Text              | `string`                                        |                       |
+| oEmbed              | Text              | `string`                                        |                       |
+| Image               | Image             | `Corcel\Model\Attachment`                       |                       |
+| File                | File              | `Corcel\Model\Attachment`                       |                       |
+| Gallery             | Gallery           | `Collection` of `Corcel\Model\Attachment`       |                       |
+| Select              | Choice            | `string` or `array`                             |                       |
+| Checkbox            | Choice            | `string` or `array`                             |                       |
+| Radio               | Choice            | `string`                                        |                       |
+| True/False          | Boolean           | `boolean`                                       |                       |
+| Post Object         | Post              | `Corcel\Model\Post` or `Collection` of `Post`   |                       |
+| Relationship        | Post              | `Corcel\Model\Post` or `Collection` of `Post`   |                       |
+| Page Link           | PageLink          | `string`                                        |                       |
+| Link                | Link              | `array` or `string`                             | HTML <a> tag or url   |
+| Taxonomy            | Term              | `Corcel\Term` or `Collection` of `Term`         |                       |
+| User                | User              | `Corcel\User`                                   |                       |
+| Date Picker         | DateTime          | `Carbon\Carbon`                                 |                       |
+| Date Time Picker    | DateTime          | `Carbon\Carbon`                                 |                       |
+| Time Picker         | DateTime          | `Carbon\Carbon`                                 |                       |
+| Color Picker        | Text              | `string`                                        |                       |
+| Group               | Group             | `GroupLayout`                                   |                       |
+| Repeater            | Repeater          | `Collection` of `RepeaterLayout`                |                       |
+| Flexible Content    | FlexibleContent   | `Collection` of `FlexibleContentLayout`         |                       |
+| (everything else)   | Generic           | string                                          |                       |
 
 ### Link
 
