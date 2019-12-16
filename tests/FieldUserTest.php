@@ -31,6 +31,6 @@ class FieldUserTest extends TestCase
         $this->assertInstanceOf(Collection::class, $acfField->value);
         $this->assertEquals(2, $acfField->value->count());
         $this->assertTrue($user2->is($acfField->value->first()));
-        $this->assertTrue($user->is($acfField->value->last()));
+        $this->assertTrue($user->is($acfField->value->get(1)));
     }
 }
