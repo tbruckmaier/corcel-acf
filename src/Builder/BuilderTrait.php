@@ -33,7 +33,6 @@ trait BuilderTrait
             // group and repeater. Sub fields can be taken directly from the
             // config array
             $subFieldConfigs = collect(array_get($attributes, 'sub_fields'));
-
         } elseif (array_has($attributes, 'layouts')) {
             // flexible content field. Here the sub fields are encapsulated
             // twice, the fc config has an array "layouts", and each layout has
@@ -53,7 +52,6 @@ trait BuilderTrait
                 // remove one level from the multi-dimensional array to get a
                 // flat list of sub fields
                 ->flatten(1);
-
         }
 
         // manually set the related children

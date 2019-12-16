@@ -30,7 +30,6 @@ class FieldBuilder extends CorcelBuilder
         // defined in php), we directly return an instance of this field with
         // the attributes set (no need to check the database)
         if ($this->fieldConfig) {
-
             $field = $this->makeBaseField($this->fieldConfig);
 
             return \collect([$field]);
