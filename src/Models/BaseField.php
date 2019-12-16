@@ -155,12 +155,12 @@ class BaseField extends CorcelPost
      * Find all instances of the related class with the given ids, return them
      * in the same order as the id array
      */
-    public function getSortedRelation(string $relatedClass, array $ids)
+    public function getSortedRelation(string $relatedClass, array $ids, string $relatedKey = 'ID')
     {
         // find all posts with the given ids and sort them in the right order,
         // see https://stackoverflow.com/questions/40731863/sort-
         // collection-by-custom-order-in-eloquent
-        return (new $relatedClass)->whereIn('ID', $ids)->get()
+        return (new $relatedClass)->whereIn($relatedKey, $ids)->get()
             ->sortBy(function ($model) use ($ids) {
                 return array_search($model->getKey(), $ids);
             });
