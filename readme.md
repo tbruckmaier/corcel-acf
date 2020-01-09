@@ -41,6 +41,7 @@ Corcel is required for this plugin, but don't worry, if it's missing it will be 
     - custom classes can be used for existing & unknown fields
 * possible to access acf field config and internal attributes
 * full support for option page
+* support for PHP- & database-based ACF config
 
 # Basic usage
 
@@ -96,6 +97,63 @@ $post->acf->thumbnail(); // an instance of the underlying Image::class
 $post->acf->thumbnail()->value; // again the same Attachment::class
 $post->acf->thumbnail()->internal_value; // the unparsed value from the `postmeta` table, in this case the attachment id
 $post->acf->thumbnail()->config; // the thumbnail acf field config array (['type' => 'image', ...])
+```
+
+## PHP-based ACF config
+
+If your ACF configuration works [via PHP](https://www.advancedcustomfields.com/resources/register-fields-via-php/), you can must pass the config array in `AcfTrait`:
+
+```php
+// wordpress functions.php
+
+acf_add_local_field_group(array(
+    'key' => 'group_1',
+    'title' => 'My Group',
+    'fields' => array (
+        array (
+            'key' => 'field_1',
+            'label' => 'Sub Title',
+            'name' => 'sub_title',
+            'type' => 'text',
+        )
+    ),
+    'location' => array (
+        array (
+            array (
+                'param' => 'post_type',
+                'operator' => '==',
+                'value' => 'post',
+            ),
+        ),
+    ),
+));
+
+```
+
+```php
+// laravel model
+
+use \Corcel\Models\Post as BasePost;
+use Tbruckmaier\Corcelacf\AcfTrait;
+
+class Post extends BasePost
+{
+    use AcfTrait;
+
+    public static function boot()
+    {
+        self::addAcfRelations([
+            'field_1' => [
+                'key' => 'field_1',
+                'label' => 'Sub Title',
+                'name' => 'sub_title',
+                'type' => 'text',
+            ],
+        ]);
+        parent::boot();
+    }
+}
+
 ```
 
 To determine which model is used for which field, the acf field's `type` variable is used. See below for a full list.
