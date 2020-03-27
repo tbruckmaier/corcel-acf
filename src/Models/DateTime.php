@@ -21,7 +21,7 @@ class DateTime extends BaseField
 
     public function getValueAttribute()
     {
-        $date = Carbon::createFromFormat($this->internal_format, $this->internal_value);
+        $date = Carbon::createFromFormat($this->internal_format, $this->internal_value, $this->getTimezoneString());
 
         // actually there is a requested format given in
         // $this->config['return_format'], but lets return a carbon instance,

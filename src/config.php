@@ -54,4 +54,6 @@ return [
         'repeater' => Repeater::class,
         'flexible_content' => FlexibleContent::class,
     ],
+
+    'timezone_string' => null,
 ];

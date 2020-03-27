@@ -3,6 +3,7 @@
 use Tbruckmaier\Corcelacf\Models\DateTime;
 use Tbruckmaier\Corcelacf\Tests\TestCase;
 use Carbon\Carbon;
+use Corcel\Model\Option;
 
 class FieldDateTimeTest extends TestCase
 {
@@ -31,5 +32,33 @@ class FieldDateTimeTest extends TestCase
 
         $this->assertInstanceOf(Carbon::class, $acfField->value);
         $this->assertEquals('00/17/30', $acfField->value->format('s/H/i')); // 17:30:00
+    }
+
+    public function testTimezoneDefault()
+    {
+        $acfField = factory(DateTime::class)->states('date_picker')->create();
+        $this->addData($acfField, 'fake_date_picker', '20161013');
+
+        $this->assertEquals('UTC', $acfField->value->getTimezone()->getName());
+    }
+
+    public function testTimezoneCustomConfig()
+    {
+        \Config::set('corcel-acf.timezone_string', 'Europe/Berlin');
+
+        $acfField = factory(DateTime::class)->states('date_picker')->create();
+        $this->addData($acfField, 'fake_date_picker', '20161013');
+
+        $this->assertEquals('Europe/Berlin', $acfField->value->getTimezone()->getName());
+    }
+
+    public function testTimezoneCustomWordpress()
+    {
+        factory(Option::class)->create(['option_name' => 'timezone_string', 'option_value' => 'Europe/Berlin']);
+
+        $acfField = factory(DateTime::class)->states('date_picker')->create();
+        $this->addData($acfField, 'fake_date_picker', '20161013');
+
+        $this->assertEquals('Europe/Berlin', $acfField->value->getTimezone()->getName());
     }
 }

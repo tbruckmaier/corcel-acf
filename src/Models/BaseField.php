@@ -6,6 +6,7 @@ use Corcel\Model\Post as CorcelPost;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Tbruckmaier\Corcelacf\Builder\FieldBuilder;
+use Corcel\Model\Option;
 
 /**
  * This class should actually be abstract (e.g. not instantiated), but some
@@ -49,6 +50,22 @@ class BaseField extends CorcelPost
     protected function mapTypeToClass(string $type)
     {
         return config('corcel-acf.classMapping.' . $type, Generic::class);
+    }
+
+    /**
+     * Get the timezone_string from wordpress. Used for DateTime, so the carbon
+     * instance has the correct timezone set (and the date is correct).
+     */
+    protected function getTimezoneString()
+    {
+        $configKey = 'corcel-acf.timezone_string';
+        $timezoneString = config($configKey);
+
+        if (empty($timezoneString)) {
+            config([$configKey => Option::get('timezone_string')]);
+        }
+
+        return config($configKey);
     }
 
     /**
