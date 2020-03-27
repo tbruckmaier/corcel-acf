@@ -32,4 +32,12 @@ trait LayoutBlock
     {
         return $this->data->has($key);
     }
+
+    /**
+     * Make the underlying data accessible.
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
 }
