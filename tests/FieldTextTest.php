@@ -78,7 +78,7 @@ class FieldTextTest extends TestCase
     {
         $acfField = factory(Text::class)->create();
         $acfField->setData(collect(['field1' => 'text']))->setLocalKey('field2');
-        $this->assertNull($acfField->value);
+        $this->assertEmpty($acfField->value);
     }
 
     public function testColorPickerField()
