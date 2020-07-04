@@ -14,7 +14,7 @@ use Corcel\Model\Collection\MetaCollection;
 
 class PhpFieldsTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 

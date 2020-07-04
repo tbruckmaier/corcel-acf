@@ -24,7 +24,7 @@ class RelationalFieldsTests extends TestCase
     /**
      * Setup a base $this->post object to represent the page with the content fields.
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         // $this->post = $this->createAcfPost();
