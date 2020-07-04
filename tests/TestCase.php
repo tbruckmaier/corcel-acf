@@ -16,22 +16,18 @@ class TestCase extends OrchestraTestCase
     {
         parent::setUp();
 
-        // FIXME we load migrations and factories from corcel, but is that
-        // really better than copying it over here?
-        $this->pathPrefix = '/../../../jgrossi/corcel';
-
         // --realpath can be used once we upgrade to 5.6
         $this->loadMigrationsFrom([
             '--database' => 'foo',
-            '--path' => $this->pathPrefix.'/tests/database/migrations',
+            '--path' => __DIR__.'/database/corcel-migrations',
         ]);
 
         $this->loadMigrationsFrom([
             '--database' => 'wp',
-            '--path' => $this->pathPrefix.'/tests/database/migrations',
+            '--path' => __DIR__.'/database/corcel-migrations',
         ]);
 
-        $this->withFactories(base_path() . '/' .$this->pathPrefix.'/tests/database/factories');
+        $this->withFactories(__DIR__ . '/database/corcel-factories');
         $this->withFactories(__DIR__ . '/database/factories');
     }
 
