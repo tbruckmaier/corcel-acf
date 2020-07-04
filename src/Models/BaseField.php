@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Tbruckmaier\Corcelacf\Builder\FieldBuilder;
 use Corcel\Model\Option;
+use Illuminate\Support\Arr;
 
 /**
  * This class should actually be abstract (e.g. not instantiated), but some
@@ -130,7 +131,7 @@ class BaseField extends CorcelPost
      */
     public function getInternalValueAttribute()
     {
-        return $this->data->get($this->localKey);
+        return $this->data->get($this->localKey, Arr::get($this->config, 'default_value'));
     }
 
     /**

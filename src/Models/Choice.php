@@ -1,6 +1,7 @@
 <?php
 
 namespace Tbruckmaier\Corcelacf\Models;
+use Illuminate\Support\Arr;
 
 class Choice extends Generic
 {
@@ -14,6 +15,6 @@ class Choice extends Generic
         }
 
         // otherwise the field "multiple" specifies
-        return !empty(array_get($this->config, 'multiple'));
+        return !empty(Arr::get($this->config, 'multiple'));
     }
 }

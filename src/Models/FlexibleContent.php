@@ -3,6 +3,7 @@
 namespace Tbruckmaier\Corcelacf\Models;
 
 use Tbruckmaier\Corcelacf\Support\FlexibleContentLayout;
+use Illuminate\Support\Arr;
 
 class FlexibleContent extends BaseField
 {
@@ -18,7 +19,7 @@ class FlexibleContent extends BaseField
     public function getLayoutBlocksAttribute()
     {
         // all available layout blocks e.g. ["5898b06bd55ed" => "infobox"]
-        $availableLayouts = collect(array_get($this->config, 'layouts'))->pluck('name', 'key');
+        $availableLayouts = collect(Arr::get($this->config, 'layouts'))->pluck('name', 'key');
 
         // the fields in the layout blocks are all children of the root fc field
         $layouts = $this->children

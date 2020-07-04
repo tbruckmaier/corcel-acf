@@ -2,6 +2,8 @@
 
 namespace Tbruckmaier\Corcelacf\Models;
 
+use Illuminate\Support\Arr;
+
 class Link extends Generic
 {
     use Traits\SerializedValue;
@@ -11,7 +13,7 @@ class Link extends Generic
      */
     public function getReturnFormatAttribute()
     {
-        return array_get($this->config, 'return_format');
+        return Arr::get($this->config, 'return_format');
     }
 
     public function getValueAttribute()
@@ -59,16 +61,16 @@ class Link extends Generic
 
     public function getUrlAttribute()
     {
-        return array_get($this->internal_value, 'url');
+        return Arr::get($this->internal_value, 'url');
     }
 
     public function getTitleAttribute()
     {
-        return array_get($this->internal_value, 'title');
+        return Arr::get($this->internal_value, 'title');
     }
 
     public function getTargetAttribute()
     {
-        return array_get($this->internal_value, 'target');
+        return Arr::get($this->internal_value, 'target');
     }
 }

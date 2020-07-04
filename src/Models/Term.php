@@ -3,6 +3,7 @@
 namespace Tbruckmaier\Corcelacf\Models;
 
 use Corcel\Model\Term as CorcelTerm;
+use Illuminate\Support\Arr;
 
 class Term extends BaseField
 {
@@ -14,7 +15,7 @@ class Term extends BaseField
      */
     public function getIsMultipleAttribute()
     {
-        $fieldType = array_get($this->config, 'field_type');
+        $fieldType = Arr::get($this->config, 'field_type');
         return in_array($fieldType, ['multi_select', 'checkbox']);
     }
 
