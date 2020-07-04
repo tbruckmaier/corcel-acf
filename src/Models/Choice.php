@@ -1,6 +1,7 @@
 <?php
 
 namespace Tbruckmaier\Corcelacf\Models;
+
 use Illuminate\Support\Arr;
 
 class Choice extends Generic
