@@ -77,7 +77,8 @@ class AcfRelation extends HasOne
                 $model->setRelation(
                     // the original method uses getRelationValue() here, but
                     // uses the meta data of the first model always.
-                    $relation, $this->getCorrectAcfField(reset($dictionary[$key]), $model)
+                    $relation,
+                    $this->getCorrectAcfField(reset($dictionary[$key]), $model)
                 );
             }
         }
