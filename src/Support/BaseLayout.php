@@ -1,12 +1,24 @@
 <?php
 
-namespace Tbruckmaier\Corcelacf\Support\Traits;
+namespace Tbruckmaier\Corcelacf\Support;
+
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Collection;
 
 /**
- * Common methods for flexible content & repeater layout blocks
+ * Base group for group, repeater & flexible content layouts bundling all common
+ * methods
  */
-trait LayoutBlock
+abstract class BaseLayout implements Arrayable
 {
+    /**
+     * The fields of this layout
+     *
+     * @var Collection|null
+     */
+    protected $data;
+
+
     /**
      * When accessing fields as method, return the AcfField instatance
      */
@@ -39,5 +51,16 @@ trait LayoutBlock
     public function getData()
     {
         return $this->data;
+    }
+
+    /**
+     * Called from toArray(), even if toArray() was called on a parent field.
+     * Forward it to the actual data
+     *
+     * @return mixed Array representation of the object.
+     */
+    public function toArray()
+    {
+        return $this->getData()->toArray();
     }
 }

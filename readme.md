@@ -42,6 +42,7 @@ Corcel is required for this plugin, but don't worry, if it's missing it will be 
 * possible to access acf field config and internal attributes
 * full support for option page
 * support for PHP- & database-based ACF config
+* `toArray()` and `toJson()` work recursively even on nested repeaters/ other fields (since 1.6)
 
 # Basic usage
 

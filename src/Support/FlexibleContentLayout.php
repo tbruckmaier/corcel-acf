@@ -7,23 +7,14 @@ use Illuminate\Support\Collection;
 /**
  * Represents one layout block of a flexible content field.
  */
-class FlexibleContentLayout
+class FlexibleContentLayout extends BaseLayout
 {
-    use Traits\LayoutBlock;
-
     /**
      * Layout block type
      *
      * @var string
      */
     protected $type;
-
-    /**
-     * The fields of this layout
-     *
-     * @var Collection|null
-     */
-    protected $data;
 
     public function __construct(string $type, Collection $data = null)
     {
