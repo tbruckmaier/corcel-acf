@@ -11,7 +11,7 @@ class FlexibleContent extends BaseField
 
     protected $with = ['children'];
 
-    public function getIsSerializedAttribute()
+    public function getIsSerializedAttribute(): bool
     {
         return true;
     }
