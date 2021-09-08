@@ -19,7 +19,7 @@ class Term extends BaseField
         return in_array($fieldType, ['multi_select', 'checkbox']);
     }
 
-    public function getIsSerializedAttribute()
+    public function getIsSerializedAttribute(): bool
     {
         return $this->is_multiple;
     }
