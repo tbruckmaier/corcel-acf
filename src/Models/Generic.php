@@ -36,6 +36,9 @@ class Generic extends BaseField implements Arrayable
      */
     public function toArray()
     {
+        if ($this->value instanceof Arrayable) {
+            return $this->value->toArray();
+        }
         return $this->value;
     }
 }
