@@ -2,12 +2,16 @@
 
 namespace Tbruckmaier\Corcelacf\Models;
 
-use Corcel\Model\User as CorcelUser;
 use Illuminate\Support\Arr;
 
 class User extends BaseField
 {
     use Traits\SerializedSometimes;
+
+    protected function getUserClass()
+    {
+        return config('corcel-acf.user_class');
+    }
 
     public function getIsMultipleAttribute() : bool
     {
@@ -21,7 +25,7 @@ class User extends BaseField
 
     public function relationSingle()
     {
-        return $this->hasOne(CorcelUser::class, 'ID', 'internal_value');
+        return $this->hasOne($this->getUserClass(), 'ID', 'internal_value');
     }
 
     public function getValueAttribute()
@@ -31,7 +35,7 @@ class User extends BaseField
         }
 
         if ($this->is_multiple) {
-            return $this->getSortedRelation(CorcelUser::class, $this->internal_value, 'ID');
+            return $this->getSortedRelation($this->getUserClass(), $this->internal_value, 'ID');
         }
 
         return $this->relationSingle;

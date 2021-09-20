@@ -55,5 +55,7 @@ return [
         'flexible_content' => FlexibleContent::class,
     ],
 
+    'user_class' => \Corcel\Model\User::class,
+
     'timezone_string' => null,
 ];
