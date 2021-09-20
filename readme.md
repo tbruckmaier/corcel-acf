@@ -5,7 +5,7 @@
 [![Packagist](https://img.shields.io/packagist/v/tbruckmaier/corcel-acf.svg)](https://github.com/tbruckmaier/corcel-acf/releases)
 [![Packagist](https://img.shields.io/packagist/dt/tbruckmaier/corcel-acf.svg)](https://packagist.org/packages/tbruckmaier/corcel-acf)
 
-> Fetch all Advanced Custom Fields (ACF) fields inside Corcel easily.
+> Use Wordpress Advanced Custom Fields (ACF) in laravel.
 
 This Corcel plugin allows you to fetch WordPress custom fields created by the [ACF](http://advancedcustomfields.com) plugin using the same syntax of Eloquent, from the [Laravel Framework](http://laravel.com). You can use Eloquent models and Collections to improve your development, using the WordPress backend with any PHP application.
 
@@ -426,6 +426,12 @@ To run the phpunit tests, execute `phpunit`:
 
 ```
 ./vendor/bin/phpunit
+```
+
+Using docker:
+```
+docker run -v $(pwd):/var/www -w /var/www php:7.3-alpine vendor/bin/phpunit
+docker run -v $(pwd):/var/www -w /var/www php:7.4-alpine vendor/bin/phpunit
 ```
 
 # Licence
