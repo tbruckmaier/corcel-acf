@@ -50,8 +50,7 @@ class OptionFieldGroup extends BaseFieldGroup
         }
 
         // load all plain values from the database, which match the prefix
-        $this->plain = Option
-            ::where('option_name', 'like', $this->prefix . '_%')
+        $this->plain = Option::where('option_name', 'like', $this->prefix . '_%')
             ->orWhere('option_name', 'like', '_' . $this->prefix . '_%')
 
             // key them by option_name
