@@ -88,6 +88,13 @@ class OptionFieldGroup extends BaseFieldGroup
     }
 
     /**
+     * Force model to get latest data from the DB again
+     */
+    public function invalidateCache(){
+        $this->loaded = false;
+    }
+
+    /**
      * Return an option (e.g. the according BaseField)
      */
     public function getOptionField($key)
