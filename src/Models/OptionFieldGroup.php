@@ -53,7 +53,7 @@ class OptionFieldGroup extends BaseFieldGroup
         // load all plain values from the database, which match the prefix
         $this->plain = Option::where('option_name', 'like', $this->prefix . $filter . '_%')
             ->orWhere('option_name', 'like', '_' . $this->prefix . $filter . '_%')
-            ->when($filter, function ($query) use ($filter){
+            ->when($filter, function ($query) use ($filter) {
                 $query->orWhere('option_name', '_' . $this->prefix . $filter);
                 $query->orWhere('option_name', $this->prefix . $filter);
             })
@@ -90,7 +90,8 @@ class OptionFieldGroup extends BaseFieldGroup
     /**
      * Force model to get latest data from the DB again
      */
-    public function invalidateCache(){
+    public function invalidateCache()
+    {
         $this->loaded = false;
     }
 
