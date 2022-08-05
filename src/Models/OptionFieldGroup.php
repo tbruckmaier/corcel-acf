@@ -43,15 +43,20 @@ class OptionFieldGroup extends BaseFieldGroup
      * Load the option data from the database & instantiate all needed BaseField
      * instances. Optionally set the prefix beforehand
      */
-    public function loadOptions(string $prefix = null)
+    public function loadOptions(string $prefix = null, ?string $filter = "")
     {
         if ($prefix) {
             $this->setPrefix($prefix);
         }
 
+        $filter = $filter ? "_" . $filter : "";
         // load all plain values from the database, which match the prefix
-        $this->plain = Option::where('option_name', 'like', $this->prefix . '_%')
-            ->orWhere('option_name', 'like', '_' . $this->prefix . '_%')
+        $this->plain = Option::where('option_name', 'like', $this->prefix . $filter . '_%')
+            ->orWhere('option_name', 'like', '_' . $this->prefix . $filter . '_%')
+            ->when($filter, function ($query) use ($filter){
+                $query->orWhere('option_name', '_' . $this->prefix . $filter);
+                $query->orWhere('option_name', $this->prefix . $filter);
+            })
 
             // key them by option_name
             ->pluck('option_value', 'option_name')
