@@ -14,9 +14,6 @@ use Illuminate\Support\Arr;
  */
 trait AcfTrait
 {
-    // "Monkey-patching for eloquent models"
-    use EloquentTentacle;
-
     protected static $acfRelations = [];
 
     protected static function bootTraits()
@@ -49,8 +46,9 @@ trait AcfTrait
 
             // create a acf relation dynamically
             $methodName = 'acf_' . $relationName;
-            self::addExternalMethod($methodName, function () use ($relationName, $config) {
-                return $this->hasAcf($relationName, $config);
+
+            self::resolveRelationUsing($methodName, function ($model) use ($relationName, $config) {
+                return $model->hasAcf($relationName, $config);
             });
         }
     }
