@@ -13,6 +13,7 @@
       "homepage": "http://jgrossi.com"
     }
   ],
+  "minimum-stability": "dev",
   "require": {
     "php": ">=7.0.0|^8.0",
     "jgrossi/corcel": ">=2.5",
