@@ -1,6 +1,5 @@
 # Corcel ACF Plugin
 
-[![Travis](https://travis-ci.org/tbruckmaier/corcel-acf.svg?branch=master)](https://travis-ci.org/tbruckmaier/corcel-acf?branch=master)
 [![StyleCI](https://github.styleci.io/repos/166053471/shield?branch=master)](https://github.styleci.io/repos/166053471)
 [![Packagist](https://img.shields.io/packagist/v/tbruckmaier/corcel-acf.svg)](https://github.com/tbruckmaier/corcel-acf/releases)
 [![Packagist](https://img.shields.io/packagist/dt/tbruckmaier/corcel-acf.svg)](https://packagist.org/packages/tbruckmaier/corcel-acf)
