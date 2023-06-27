@@ -1,5 +1,6 @@
 # Corcel ACF Plugin
 
+[![PHPunit](https://github.com/tbruckmaier/corcel-acf/actions/workflows/ci.yml/badge.svg)](https://github.com/tbruckmaier/corcel-acf/actions/workflows/ci.yml/badge.svg)
 [![StyleCI](https://github.styleci.io/repos/166053471/shield?branch=master)](https://github.styleci.io/repos/166053471)
 [![Packagist](https://img.shields.io/packagist/v/tbruckmaier/corcel-acf.svg)](https://github.com/tbruckmaier/corcel-acf/releases)
 [![Packagist](https://img.shields.io/packagist/dt/tbruckmaier/corcel-acf.svg)](https://packagist.org/packages/tbruckmaier/corcel-acf)
