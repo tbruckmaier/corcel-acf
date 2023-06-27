@@ -26,7 +26,7 @@ class FieldRepeaterTest extends TestCase
             'fake_repeater_1_repeater_text2' => 'Second entry text2',
         ];
 
-        $this->setData($this->acfField, $data)->setLocalKey('fake_repeater');
+        $this->setAcfData($this->acfField, $data)->setLocalKey('fake_repeater');
 
         factory(Text::class)->create(['post_parent' => $this->acfField->ID, 'post_excerpt' => 'repeater_text']);
         factory(Boolean::class)->create(['post_parent' => $this->acfField->ID, 'post_excerpt' => 'repeater_boolean']);

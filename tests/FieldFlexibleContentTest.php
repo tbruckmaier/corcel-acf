@@ -37,7 +37,7 @@ class FieldFlexibleContentTest extends TestCase
             'fake_flexible_content_2_post' => serialize($multiplePosts->pluck('ID')->all()),
         ];
 
-        $this->setData($acfField, $data)->setLocalKey('fake_flexible_content');
+        $this->setAcfData($acfField, $data)->setLocalKey('fake_flexible_content');
 
         $this->assertInstanceOf(Collection::class, $acfField->value);
         $this->assertEquals(3, $acfField->value->count());
@@ -74,7 +74,7 @@ class FieldFlexibleContentTest extends TestCase
             'fake_flexible_content_1_text' => 'Lorem ipsum obsolete',
         ];
 
-        $this->setData($acfField, $data)->setLocalKey('fake_flexible_content');
+        $this->setAcfData($acfField, $data)->setLocalKey('fake_flexible_content');
 
         $this->assertInstanceOf(Collection::class, $acfField->value);
         $this->assertEquals(1, $acfField->value->count()); // only ONE field
@@ -86,7 +86,7 @@ class FieldFlexibleContentTest extends TestCase
 
         $data = ['fake_flexible_content' => ''];
 
-        $this->setData($acfField, $data)->setLocalKey('fake_flexible_content');
+        $this->setAcfData($acfField, $data)->setLocalKey('fake_flexible_content');
 
         $this->assertInstanceOf(Collection::class, $acfField->value);
         $this->assertEquals(0, $acfField->value->count());

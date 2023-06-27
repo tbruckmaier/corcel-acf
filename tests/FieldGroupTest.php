@@ -21,7 +21,7 @@ class FieldGroupTest extends TestCase
             'fake_group_fake_boolean' => '1',
         ];
 
-        $this->setData($groupField, $data)->setLocalKey('fake_group');
+        $this->setAcfData($groupField, $data)->setLocalKey('fake_group');
 
         $this->assertInstanceOf(GroupLayout::class, $groupField->value);
         $this->assertInstanceOf(Text::class, $groupField->value->fake_text());

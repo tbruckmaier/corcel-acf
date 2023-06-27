@@ -66,10 +66,10 @@ class TestCase extends OrchestraTestCase
 
     protected function addData(BaseField $acfField, $key, $value)
     {
-        return $this->setData($acfField, [$key => $value])->setLocalKey($key);
+        return $this->setAcfData($acfField, [$key => $value])->setLocalKey($key);
     }
 
-    protected function setData(BaseField $acfField, $data)
+    protected function setAcfData(BaseField $acfField, $data)
     {
         return $acfField->setData(collect($data));
     }

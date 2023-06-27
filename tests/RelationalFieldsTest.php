@@ -9,12 +9,7 @@ use Tbruckmaier\Corcelacf\Tests\TestCase;
 use Corcel\Model\User as CorcelUser;
 use Corcel\Model\Term as CorcelTerm;
 
-/**
- * Class RelationalFieldsTests.
- *
- * @author Junior Grossi <juniorgro@gmail.com>
- */
-class RelationalFieldsTests extends TestCase
+class RelationalFieldsTest extends TestCase
 {
     /**
      * @var Post
