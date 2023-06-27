@@ -22,7 +22,6 @@
     "laravel/framework": ">=7.0",
     "phpunit/phpunit": ">=6.0",
     "orchestra/testbench": ">=3.4",
-    "orchestra/database": ">=3.4",
     "laravel/legacy-factories": "^1.3"
   },
   "autoload": {
