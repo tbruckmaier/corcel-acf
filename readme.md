@@ -428,11 +428,7 @@ To run the phpunit tests, execute `phpunit`:
 ./vendor/bin/phpunit
 ```
 
-Using docker:
-```
-docker run -v $(pwd):/var/www -w /var/www php:7.3-alpine vendor/bin/phpunit
-docker run -v $(pwd):/var/www -w /var/www php:7.4-alpine vendor/bin/phpunit
-```
+Tests with different php & laravel versions are defined in `.github/workflows/ci.yml`. They can be run locally via [act](https://github.com/nektos/act)
 
 # Licence
 
