@@ -28,7 +28,6 @@ class OptionGroupBuilder extends FieldGroupBuilder
         // fields defined in php), we directly return an instance of this field
         // with the children set (no need to check the database)
         if ($this->fieldConfigs) {
-
             // turn the field array into (sub)instances of BaseField
             $childFields = collect($this->fieldConfigs)
                 ->map(function ($fieldConfig) {

@@ -31,7 +31,6 @@ trait AcfTrait
         $methods = [];
 
         foreach (self::getAcfRelations() as $relationData) {
-
             // the relation is either a plain string with the acf field name, in
             // that case we get the field configuration from the database (for
             // use with acf-json). Or the acf field name is the array key, and

@@ -30,7 +30,6 @@ trait BuilderTrait
         // now check if we have sub_fields/layouts, and populate the main fields
         // relation
         if (Arr::has($attributes, 'sub_fields')) {
-
             // group and repeater. Sub fields can be taken directly from the
             // config array
             $subFieldConfigs = collect(Arr::get($attributes, 'sub_fields'));
