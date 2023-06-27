@@ -1,6 +1,11 @@
-name: CI
+name: PHPunit
 
-on: [push]
+on:
+  push:
+  pull_request:
+    types: [opened, reopened]
+  schedule:
+    - cron: "23 4 17 * *"
 
 jobs:
   build-tests:
