@@ -17,6 +17,6 @@ class Relationship extends BaseField
     {
         // it would be nice if we could implement this as a hasMany()
         // relation, but laravel does not support whereIn() in relationships
-        return $this->getSortedRelation(CorcelPost::class, $this->internal_value);
+        return $this->getSortedRelation(CorcelPost::class, $this->internal_value ?: []);
     }
 }

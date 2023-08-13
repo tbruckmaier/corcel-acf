@@ -19,4 +19,12 @@ class FieldRelationshipTest extends TestCase
         $this->assertInstanceOf(Collection::class, $acfField->value);
         $this->assertEquals(['Post #0', 'Post #2', 'Post #1'], $acfField->value->pluck('post_title')->all());
     }
+    public function testRelationshipFieldEmpty()
+    {
+        $acfField = factory(Relationship::class)->create();
+        $this->addData($acfField, 'fake_relationship_object', "");
+
+        $this->assertInstanceOf(Collection::class, $acfField->value);
+        $this->assertEquals([], $acfField->value->all());
+    }
 }
