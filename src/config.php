@@ -7,6 +7,7 @@ use Tbruckmaier\Corcelacf\Models\Image;
 use Tbruckmaier\Corcelacf\Models\File;
 use Tbruckmaier\Corcelacf\Models\Boolean;
 use Tbruckmaier\Corcelacf\Models\Post;
+use Tbruckmaier\Corcelacf\Models\Relationship;
 use Tbruckmaier\Corcelacf\Models\PageLink;
 use Tbruckmaier\Corcelacf\Models\Term;
 use Tbruckmaier\Corcelacf\Models\DateTime;
@@ -42,7 +43,7 @@ return [
         'boolean' => Boolean::class,
         'post_object' => Post::class,
         'post' => Post::class,
-        'relationship' => Post::class,
+        'relationship' => Relationship::class,
         'page_link' => PageLink::class,
         'taxonomy' => Term::class,
         'term' => Term::class,

@@ -340,7 +340,7 @@ The following field types are supported (everything else just returns a `Generic
 | Radio               | Choice            | `string`                                        |                       |
 | True/False          | Boolean           | `boolean`                                       |                       |
 | Post Object         | Post              | `Corcel\Model\Post` or `Collection` of `Post`   |                       |
-| Relationship        | Post              | `Corcel\Model\Post` or `Collection` of `Post`   |                       |
+| Relationship        | Relationship      | `Collection` of `Post`                          |                       |
 | Page Link           | PageLink          | `string`                                        |                       |
 | Link                | Link              | `array` or `string`                             | HTML <a> tag or url   |
 | Taxonomy            | Term              | `Corcel\Term` or `Collection` of `Term`         |                       |

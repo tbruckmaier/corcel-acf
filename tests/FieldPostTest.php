@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class FieldPostTest extends TestCase
 {
-    public function testFileFieldField()
+    public function testPostField()
     {
         $post = factory(CorcelPost::class)->create(['post_title' => 'ACF Basic Fields']);
 
