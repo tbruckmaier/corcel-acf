@@ -47,7 +47,7 @@ class Repeater extends BaseField
                 ));
             }
 
-            list ($layoutKey, $relationName) = explode('.', $fullRelationName, 2);
+            list($layoutKey, $relationName) = explode('.', $fullRelationName, 2);
 
             // get a plain collection of the relationship's parent field (e.g. a
             // list of "Image::class")
