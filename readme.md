@@ -400,6 +400,29 @@ $fcLayouts->get(1)->accordion_items->first()->title; // "First accordion element
 $fcLayouts->get(1)->accordion_items->first()->content; // "First accordion content..."
 ```
 
+#### Eager loading relationships
+
+If you have a repeater which includes an image field, it may be wise to preload the image's `Attachment` relation (otherwise an own query is fired for each attachment):
+
+```php
+use Tbruckmaier\Corcelacf\Models\Repeater;
+
+$post = Post::find(1);
+
+// fires 2 queries per iteration
+foreach ($post->acf->main_repeater as $layout) {
+    $layout->foo_image->attachment;
+    $layout->bar_image->attachment;
+}
+
+// preloads all attachment relations, fires 2 queries in total
+foreach ($post->acf->main_repeater()->load('foo_image.attachment', 'bar_image.attachment') as $layout) {
+    $layout->foo_image->attachment;
+    $layout->bar_image->attachment;
+}
+
+```
+
 ### Group field
 
 A group field returns a `GroupLayout`, which contains all grouped fields. `GroupLayout` acts like a `FlexibleContentLayout` or a `RepeaterLayout`: by accessing its fields as attributes, the parsed value is returned. When accessing them as methods, the class itself is returned.

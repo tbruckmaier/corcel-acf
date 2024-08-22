@@ -6,6 +6,8 @@ use Tbruckmaier\Corcelacf\Models\Boolean;
 use Tbruckmaier\Corcelacf\Tests\TestCase;
 use Illuminate\Support\Collection;
 use Tbruckmaier\Corcelacf\Support\RepeaterLayout;
+use Corcel\Model\Attachment;
+use Tbruckmaier\Corcelacf\Models\Image;
 
 class FieldRepeaterTest extends TestCase
 {
