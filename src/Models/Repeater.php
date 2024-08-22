@@ -39,7 +39,6 @@ class Repeater extends BaseField
         // requested, load the relation "attachment" on the foo_image field of
         // each layout
         foreach ($this->_with as $fullRelationName) {
-
             if (!str_contains($fullRelationName, '.')) {
                 throw new InvalidArgumentException(sprintf(
                     "Eager-loaded ACF repeater relations must contain '.'. Available parents:\n%s",
