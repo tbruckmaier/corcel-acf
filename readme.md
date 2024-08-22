@@ -416,7 +416,7 @@ foreach ($post->acf->main_repeater as $layout) {
 }
 
 // preloads all attachment relations, fires 2 queries in total
-foreach ($post->acf->main_repeater()->load('foo_image.attachment', 'bar_image.attachment') as $layout) {
+foreach ($post->acf->main_repeater()->load('foo_image.attachment', 'bar_image.attachment')->value as $layout) {
     $layout->foo_image->attachment;
     $layout->bar_image->attachment;
 }
