@@ -34,6 +34,7 @@ return [
         'select' => Choice::class,
         'checkbox' => Choice::class,
         'radio' => Choice::class,
+        'button_group' => Choice::class,
         'link' => Link::class,
         'image' => Image::class,
         'img' => Image::class,
