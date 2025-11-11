@@ -39,6 +39,30 @@ class FieldLinkTest extends TestCase
         );
     }
 
+
+    public function testLinkFieldWithoutTitle()
+    {
+        $acfField = factory(Link::class)->create();
+
+        $data = [
+            'title' => '',
+            'url' => 'https://www.example.com/example',
+            'target' => '_blank',
+        ];
+
+        $this->addData($acfField, 'fake_link', serialize($data));
+
+        $this->assertEquals($data, $acfField->value);
+        $this->assertEquals($data['url'], $acfField->url);
+        $this->assertEquals($data['title'], $acfField->title);
+        $this->assertEquals($data['target'], $acfField->target);
+
+        $this->assertEquals(
+            '<a href="https://www.example.com/example" title="" target="_blank">https://www.example.com/example</a>',
+            (string)$acfField
+        );
+    }
+
     public function testLinkUrlField()
     {
         $acfField = factory(Link::class)->states('url_return')->create();

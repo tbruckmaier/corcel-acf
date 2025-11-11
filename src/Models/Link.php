@@ -41,7 +41,7 @@ class Link extends Generic
             'target' => $this->target,
         ], $customAttributes);
 
-        $linkText = ($linkText ?: e($this->title));
+        $linkText = ($linkText ?: e($this->title) ?: e($this->url));
 
         $html = '<a';
         foreach ($attributes as $key => $value) {
