@@ -33,7 +33,7 @@ class Link extends Generic
      *
      * @return string html
      */
-    public function render(string $linkText = null, array $customAttributes = [])
+    public function render(?string $linkText = null, array $customAttributes = [])
     {
         $attributes = array_replace([
             'href' => $this->url,
@@ -41,7 +41,9 @@ class Link extends Generic
             'target' => $this->target,
         ], $customAttributes);
 
-        $linkText = ($linkText ?: e($this->title) ?: e($this->url));
+        if (is_null($linkText)) {
+            $linkText = (e($this->title) ?: e($this->url));
+        }
 
         $html = '<a';
         foreach ($attributes as $key => $value) {
