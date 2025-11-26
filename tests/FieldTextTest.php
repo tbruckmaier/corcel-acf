@@ -87,4 +87,11 @@ class FieldTextTest extends TestCase
         $this->addData($acfField, 'fake_color_picker', '#7263a8');
         $this->assertEquals('#7263a8', $acfField->value);
     }
+
+    public function testWithDefault()
+    {
+        $acfField = factory(Text::class)->states('with_default')->create();
+        $acfField->setData(collect([]))->setLocalKey('fake_select_multiple_with_default');
+        $this->assertEquals('lorem ipsum', $acfField->value);
+    }
 }

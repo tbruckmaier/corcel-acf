@@ -120,6 +120,11 @@ class BaseField extends CorcelPost
         return isset($fieldData['type']) ? $fieldData['type'] : 'text';
     }
 
+    public function getDefaultValueAttribute()
+    {
+        return Arr::get($this->config, 'default_value');
+    }
+
     /**
      * Get this field's internal value, e.g. the entry in $this->data matching
      * $this->localKey. For text fields, this is the text, for image fields the
@@ -131,7 +136,7 @@ class BaseField extends CorcelPost
      */
     public function getInternalValueAttribute()
     {
-        return $this->data->get($this->localKey, Arr::get($this->config, 'default_value'));
+        return $this->data->get($this->localKey, $this->default_value);
     }
 
     /**
