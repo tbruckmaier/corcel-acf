@@ -14,12 +14,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - laravel-version: '^13.0'
-            php-version: '8.5'
-          - laravel-version: '^13.0'
-            php-version: '8.4'
-          - laravel-version: '^13.0'
-            php-version: '8.3'
           - laravel-version: '^12.0'
             php-version: '8.5'
           - laravel-version: '^12.0'
