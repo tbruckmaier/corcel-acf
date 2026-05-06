@@ -120,9 +120,9 @@ class BaseField extends CorcelPost
         return isset($fieldData['type']) ? $fieldData['type'] : 'text';
     }
 
-    public function getDefaultValueAttribute()
+    public function getDefaultValue($fallback = null)
     {
-        return Arr::get($this->config, 'default_value');
+        return Arr::get($this->config, 'default_value') ?: $fallback;
     }
 
     /**
@@ -136,7 +136,7 @@ class BaseField extends CorcelPost
      */
     public function getInternalValueAttribute()
     {
-        return $this->data->get($this->localKey, $this->default_value);
+        return $this->data->get($this->localKey, $this->getDefaultValue());
     }
 
     /**

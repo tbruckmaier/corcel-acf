@@ -13,11 +13,17 @@ class FieldChoiceTest extends TestCase
         $this->assertEquals('red', $acfField->value);
     }
 
+    public function testSelectFieldWithoutDefault()
+    {
+        $acfField = factory(Choice::class)->states('select')->create();
+        $acfField->setData(collect([]))->setLocalKey('fake_select');
+        $this->assertEquals(null, $acfField->value);
+    }
+
     public function testSelectWithDefaultField()
     {
         $acfField = factory(Choice::class)->states('select_with_default')->create();
         $acfField->setData(collect([]))->setLocalKey('fake_select_with_default');
-
         $this->assertEquals('yellow', $acfField->value);
     }
 
@@ -34,6 +40,13 @@ class FieldChoiceTest extends TestCase
         $acfField = factory(Choice::class)->states('select_multiple_with_default')->create();
         $acfField->setData(collect([]))->setLocalKey('fake_select_multiple_with_default');
         $this->assertEquals(['red', 'yellow'], $acfField->value);
+    }
+
+    public function testSelectMultipleWithoutDefault()
+    {
+        $acfField = factory(Choice::class)->states('select_multiple')->create();
+        $acfField->setData(collect([]))->setLocalKey('fake_select_multiple');
+        $this->assertEquals([], $acfField->value);
     }
 
     public function testCheckboxField()

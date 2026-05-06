@@ -7,7 +7,7 @@ trait SerializedValue
     public function getInternalValueAttribute()
     {
         if (!$this->data->has($this->localKey)) {
-            return $this->default_value;
+            return $this->getDefaultValue([]);
         }
 
         $value = $this->data->get($this->localKey);

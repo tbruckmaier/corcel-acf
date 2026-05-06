@@ -23,7 +23,7 @@ trait SerializedSometimes
     public function getInternalValueAttribute()
     {
         if (!$this->data->has($this->localKey)) {
-            return $this->default_value;
+            return $this->getDefaultValue($this->is_serialized ? [] : null);
         }
         
         $value = $this->data->get($this->localKey);
