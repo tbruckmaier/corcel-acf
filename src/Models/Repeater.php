@@ -15,7 +15,7 @@ class Repeater extends BaseField
 
     public function getValueAttribute()
     {
-        $count = $this->internal_value;
+        $count = (int)$this->internal_value;
 
         $layouts = collect();
 
